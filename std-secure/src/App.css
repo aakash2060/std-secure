@@ -10,13 +10,14 @@ body {
 nav {
   margin: 0;
   width: 100%;
-  height: 80px;
-  background-color: black;
+  height: 60px;
+  background-color: #757575;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   text-decoration: none;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 a {
@@ -186,4 +187,62 @@ textarea {
   width: 100%;
   overflow: hidden;
   overflow-y: auto;
+}
+
+.post-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.post-box {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  width: 400px;
+
+}
+
+.post-title {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0062cc;
 }
