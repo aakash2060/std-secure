@@ -32,7 +32,7 @@ function CreatePost(props) {
       postText,
       author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
     });
-    navigate("/");
+    navigate("/posts");
   };
 
   

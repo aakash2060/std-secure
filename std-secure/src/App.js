@@ -1,18 +1,13 @@
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import CreatePost from "./pages/CreatePost";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import Landing from "./pages/Landing";
 import Posts from "./pages/Posts";
+import ViewPost from "./pages/ViewPost";
 
 function App() {
   const [isAuth, setIsAuth] = useState(() => {
@@ -44,6 +39,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/posts" element={<Posts isAuth={isAuth} />} />
+        <Route path="/view" element={<ViewPost />} />
         <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
         <Route path="/createpost" element={<CreatePost isAuth={isAuth} />} />
       </Routes>
