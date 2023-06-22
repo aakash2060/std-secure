@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { db } from "../firebase";
 import Linkify from "react-linkify";
-import $ from "jquery"
+import $ from "jquery";
 function ViewPost() {
   const location = useLocation();
+  const PRESET_PASSWORD = "1234";
 
   const postId = location.state.postId.toString();
   console.log("🚀 ~ file: singlePost.js:10 ~ SinglePost ~ postId:", postId);
@@ -18,7 +19,14 @@ function ViewPost() {
   };
 
   useEffect(() => {
-    getPosts();
+    const password = window.prompt(
+      "Please enter the password to enter the website:"
+    );
+    if (password === PRESET_PASSWORD) {
+      getPosts();
+    } else {
+      alert("Incorrect password. Access denied.");
+    }
   }, []);
 
   if (!post) return null;

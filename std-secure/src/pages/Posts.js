@@ -10,11 +10,13 @@ function Posts(props) {
   const [postLists, setPostList] = useState([]);
   const postsCollectionRef = collection(db, "posts");
 
-  async function deletePost(id) {
+async function deletePost(id) {
+  if (window.confirm("Are you sure you want to delete this post?")) {
     const postDoc = doc(db, "posts", id);
     await deleteDoc(postDoc);
     getPosts();
   }
+}
   const getPosts = async () => {
     const data = await getDocs(postsCollectionRef);
     setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -39,7 +41,7 @@ function Posts(props) {
               <div className="title">
                 <h1> {post.title}</h1>
               </div>
-              <div className="deletePost">
+              <div>
                 {isAuth && post.author.id === auth.currentUser.uid && (
                   <button
                     onClick={() => {
@@ -60,27 +62,31 @@ function Posts(props) {
                   </button>
                 )}
               </div>
-              <button onClick={()=>{
-                navigate('/view',{state:{postId:[post.id]}})
-              }}>Open Post</button>
+              
             </div>
             <div className="postTextContainer">
               <Linkify
                 componentDecorator={(decoratedHref, decoratedText, key) => (
                   <>
                     <a
-                      href={decoratedHref}
+                      href={""}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Click here to open the link
+                      Open Post to See the Link
                     </a>
                   </>
                 )}
               >
                 {post.postText}
               </Linkify>
-            </div>
+            </div><hr/>
+            <center>
+            <button type="button" className="btn btn-outline-info"
+              onClick={()=>{
+                navigate('/view',{state:{postId:[post.id]}})
+              }}>Open Post</button>
+              </center>
             <h3>@{post.author.name}</h3>
           </div>
         );
