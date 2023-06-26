@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  deleteDoc,
+  doc,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import Linkify from "react-linkify";
@@ -19,7 +26,8 @@ function Posts(props) {
     }
   }
   const getPosts = async () => {
-    const data = await getDocs(postsCollectionRef);
+    const q = query(postsCollectionRef, orderBy("date", "desc"));
+    const data = await getDocs(q);
     setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     isLoading(false);
   };

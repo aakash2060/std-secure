@@ -31,11 +31,11 @@ function CreatePost(props) {
   const navigate = useNavigate();
 
   const createPost = async () => {
-      if (password !== confirmPassword) {
-        setError({ password: "Passwords do not match" });
-        return;
-      }
-    
+    if (password !== confirmPassword) {
+      setError({ password: "Passwords do not match" });
+      return;
+    }
+
     if (error != null) {
       await addDoc(postCollectionRef, {
         title,
@@ -118,7 +118,7 @@ function CreatePost(props) {
                 placeholder="Password..."
                 onChange={handlePasswordChange}
               />
-
+              <br />
               <label className="form-label">Confirm Password:</label>
               <input
                 className="form-input"
