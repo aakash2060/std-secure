@@ -23,7 +23,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <>
       <nav>
         <Link to="/">Home</Link>
         {!isAuth ? (
@@ -43,7 +43,7 @@ function App() {
         <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
         <Route path="/createpost" element={<CreatePost isAuth={isAuth} />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
