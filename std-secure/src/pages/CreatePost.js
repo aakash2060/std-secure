@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { storage } from "../firebase";
-import 'firebase/storage';  // <----
+import "firebase/firestore";
+import "firebase/storage"; // <----
 
 function CreatePost(props) {
-  const {isAuth} = props;
+  const { isAuth } = props;
   const [title, setTitle] = useState("");
   const [postText, setPostText] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setconfirmPassword] = useState("");
   const [file, setFile] = useState("");
+  const [error, setError] = useState("");
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -27,54 +31,115 @@ function CreatePost(props) {
   const navigate = useNavigate();
 
   const createPost = async () => {
-    await addDoc(postCollectionRef, {
-      title,
-      postText,
-      author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
-    });
-    navigate("/posts");
+      if (password !== confirmPassword) {
+        setError({ password: "Passwords do not match" });
+        return;
+      }
+    
+    if (error != null) {
+      await addDoc(postCollectionRef, {
+        title,
+        postText,
+        author: {
+          name: auth.currentUser.displayName,
+          id: auth.currentUser.uid,
+        },
+        password,
+        date: serverTimestamp(),
+      });
+      navigate("/posts");
+    }
   };
 
-  
-  useEffect(()=>{
-    if(!isAuth){
+  const handlePasswordChange = (event) => {
+    let error = {};
+    setPassword(event.target.value);
+    if (event.target.value !== confirmPassword) {
+      error.password = "Passwords do not match";
+    }
+    setError(error);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    let error = {};
+    setconfirmPassword(event.target.value);
+    if (event.target.value !== password) {
+      error.password = "Passwords do not match";
+    }
+    setError(error);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    createPost();
+  };
+
+  useEffect(() => {
+    if (!isAuth) {
       navigate("/login");
     }
-
   }, []);
 
   return (
-    <div className="post-container">
-      <div className="post-box">
-        <h1 className="post-title">Create A Post</h1>
-        <div className="form-group">
-          <label className="form-label">Title:</label>
-          <input
-            className="form-input"
-            placeholder="Title..."
-            onChange={(event) => {
-              setTitle(event.target.value);
-            }}
-          />
+    <form onSubmit={handleSubmit}>
+      <div className="post-container">
+        <div className="post-box">
+          <h1 className="post-title">Create A Post</h1>
+          <div className="form-group">
+            <label className="form-label">Title:</label>
+            <input
+              className="form-input"
+              placeholder="Title..."
+              required
+              onChange={(event) => {
+                setTitle(event.target.value);
+              }}
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Post:</label>
+            <textarea
+              className="form-textarea"
+              required
+              style={{ width: "392px", height: "124px" }}
+              placeholder="Post..."
+              onChange={(event) => {
+                setPostText(event.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <div className="form-group">
+              <label className="form-label">Password:</label>
+              <input
+                className="form-input"
+                style={{ borderColor: error.password ? "red" : "" }}
+                type="password"
+                placeholder="Password..."
+                onChange={handlePasswordChange}
+              />
+
+              <label className="form-label">Confirm Password:</label>
+              <input
+                className="form-input"
+                type="password"
+                style={{ borderColor: error.password ? "red" : "" }}
+                placeholder="Confirm Password..."
+                onChange={handleConfirmPasswordChange}
+              />
+              {error && <p style={{ color: "red" }}>{error.password}</p>}
+            </div>
+          </div>
+          {/* <input type="file" onChange={handleFileChange} className="form-input" />
+        <button onClick={upload}> Upload </button> */}
+          <br />
+          <br />
+          <button className="btn btn-primary" type="submit">
+            Post
+          </button>
         </div>
-        <div className="form-group">
-          <label className="form-label">Post:</label>
-          <textarea
-            className="form-textarea"
-            style={{ width: "392px", height: "124px" }}
-            placeholder="Post..."
-            onChange={(event) => {
-              setPostText(event.target.value);
-            }}
-          />
-        </div>
-        <input type="file" onChange={handleFileChange} className="form-input" />
-        <button onClick={upload}> Upload </button><br/><br/>
-        <button className="btn btn-primary" type="submit" onClick={createPost}>
-          Post
-        </button>
       </div>
-    </div>
+    </form>
   );
 }
 

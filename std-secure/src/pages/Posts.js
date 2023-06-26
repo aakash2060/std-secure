@@ -8,6 +8,7 @@ function Posts(props) {
   const { isAuth } = props;
   const navigate = useNavigate();
   const [postLists, setPostList] = useState([]);
+  const [loading, isLoading] = useState(true);
   const postsCollectionRef = collection(db, "posts");
 
   async function deletePost(id) {
@@ -20,6 +21,7 @@ function Posts(props) {
   const getPosts = async () => {
     const data = await getDocs(postsCollectionRef);
     setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    isLoading(false);
   };
 
   useEffect(() => {
@@ -29,6 +31,9 @@ function Posts(props) {
       getPosts();
     }
   }, []);
+  if (loading) {
+    return <div> </div>;
+  }
 
   return (
     <div className="homePage">
@@ -36,7 +41,7 @@ function Posts(props) {
         <div
           style={{
             color: "green",
-            fontSize:"20px",
+            fontSize: "20px",
             textAlign: "center",
             height: "50%",
             position: "fixed",

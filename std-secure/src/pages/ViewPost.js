@@ -23,13 +23,17 @@ function ViewPost() {
   useEffect(() => {
     const fetchData = async () => {
       await getPosts();
-      const password = window.prompt(
-        "Please enter the password to enter the website:"
-      );
-      if (password === pass) {
-        setShow(true);
+      if (pass.length != 0) {
+        const password = window.prompt(
+          "Please enter the password to enter the website:"
+        );
+        if (password === pass) {
+          setShow(true);
+        } else {
+          alert("Incorrect password. Access denied.");
+        }
       } else {
-        alert("Incorrect password. Access denied.");
+        setShow(true);
       }
     };
 
