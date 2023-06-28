@@ -1,15 +1,51 @@
 import React from "react";
-import { auth, provider } from "../firebase";
+import { auth, db, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { signInWithPopup } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 
 function Login({ setIsAuth }) {
   const navigate = useNavigate();
+  const postCollectionRef = collection(db, "users");
   const signInWithGoogle = () => {
-    signInWithPopup(auth, provider).then((result) => {
-      console.log("🚀 ~ file: Login.js:10 ~ signInWithPopup ~ result:", result)
+    signInWithPopup(auth, provider).then(async (result) => {
+      console.log("🚀 ~ file: Login.js:10 ~ signInWithPopup ~ result:", auth);
       localStorage.setItem("isAuth", true);
       setIsAuth(true);
+      const name = auth.currentUser.displayName;
+      const email = auth.currentUser.email;
+      const id = auth.currentUser.uid;
+      const date = serverTimestamp();
+
+      const querySnapshot = await getDocs(
+        query(postCollectionRef, where("email", "==", email))
+      );
+      if (querySnapshot.size > 0) {
+        const docRef = doc(postCollectionRef, querySnapshot.docs[0].id);
+        await updateDoc(docRef, {
+          id,
+          date,
+          name,
+          email,
+        });
+      } else {
+        await addDoc(postCollectionRef, {
+          id,
+          date,
+          name,
+          email,
+        });
+      }
+
       navigate("/posts");
     });
   };
