@@ -5,10 +5,13 @@ import { db } from "../firebase";
 import Linkify from "react-linkify";
 
 function ViewPost() {
-  const location = useLocation();
-  // const PRESET_PASSWORD = "1234";
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
+  // const postId = queryParams.get("postId");
 
-  const postId = location.state.postId.toString();
+  const postId = sessionStorage.getItem("postId");
+
+  // const postId = location.state.postId.toString();
   const [post, setPost] = useState(null);
   const [show, setShow] = useState(false);
   let pass = "";
@@ -23,7 +26,7 @@ function ViewPost() {
   useEffect(() => {
     const fetchData = async () => {
       await getPosts();
-      if (pass.length != 0) {
+      if (pass.length !== 0) {
         const password = window.prompt(
           "Please enter the password to enter the website:"
         );
@@ -38,6 +41,14 @@ function ViewPost() {
     };
 
     fetchData();
+    const handleContextmenu = (e) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener("contextmenu", handleContextmenu);
+    return function cleanup() {
+      document.removeEventListener("contextmenu", handleContextmenu);
+    };
   }, []);
 
   if (!post) return null;
@@ -51,16 +62,21 @@ function ViewPost() {
               <div className="title">
                 <h1> {post.title}</h1>
               </div>
-              {/* ... */}
             </div>
-            <div className="postTextContainer" style={{ height: "80%" }}>
+            <div
+              className="postTextContainer"
+              style={{ height: "80%" }}
+              onContextMenu={(e) => e.preventDefault()}
+            >
               <Linkify
-                componentDecorator={(decoratedHref, decoratedText, key) => (
-                  <>
-                    <iframe src={decoratedHref} height="90%" width="100%">
-                      {" "}
-                    </iframe>
-                  </>
+                componentDecorator={(decoratedHref, key) => (
+                  <iframe
+                    key={key}
+                    id={postId}
+                    src={decoratedHref}
+                    height="90%"
+                    width="100%"
+                  ></iframe>
                 )}
               >
                 {post.postText}

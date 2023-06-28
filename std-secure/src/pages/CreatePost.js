@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { storage } from "../firebase";
 import "firebase/firestore";
 import "firebase/storage"; // <----
+import "../App.css"
 
 function CreatePost(props) {
   const { isAuth } = props;
@@ -101,7 +102,7 @@ function CreatePost(props) {
             <textarea
               className="form-textarea"
               required
-              style={{ width: "392px", height: "124px" }}
+              style={{ width: "", height: "124px" }}
               placeholder="Post..."
               onChange={(event) => {
                 setPostText(event.target.value);

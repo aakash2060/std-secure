@@ -7,6 +7,7 @@ function Login({ setIsAuth }) {
   const navigate = useNavigate();
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider).then((result) => {
+      console.log("🚀 ~ file: Login.js:10 ~ signInWithPopup ~ result:", result)
       localStorage.setItem("isAuth", true);
       setIsAuth(true);
       navigate("/posts");
