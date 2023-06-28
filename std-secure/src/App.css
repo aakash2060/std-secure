@@ -12,6 +12,16 @@ body {
   font-size: 15px;
 }
 
+.homepage-announcement{
+  color: green;
+  font-size: 20px;
+  text-align: center;
+  height: 50%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
 nav {
   margin: 0;
   width: 100%;
@@ -20,7 +30,7 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: white ;
   text-decoration: none;
   font-family: 'Times New Roman', Times, serif;
 }
@@ -151,13 +161,15 @@ textarea {
 }
 
 .homePage .post {
-  width: 600px;
+  width: 700px;
   height: auto;
   max-height: 600px;
   background-color: rgb(250, 250, 250);
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  margin: 20px;
+  margin: 30px;
+  margin-bottom: 50px;
   padding: 20px;
+  padding-top: 10px;
   border-radius: 15px;
 }
 
@@ -168,7 +180,7 @@ textarea {
 }
 
 .postHeader .title {
-  flex: 50%;
+  flex: 20%;
 }
 .postHeader .deletePost {
   flex: 50%;
@@ -204,7 +216,7 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80vh;
+  height: 90vh;
 }
 
 .post-box {
@@ -241,8 +253,8 @@ textarea {
 }
 
 .btn {
-  background-color: #007bff;
-  color: #fff;
+  /* background-color: #007bff; */
+  /* color: #fff; */
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
@@ -256,4 +268,89 @@ textarea {
 
 .btn-primary:hover {
   background-color: #0062cc;
+}
+
+.delete-button:hover {
+  color: red;
+}
+
+
+.post {
+  width: 100%;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68); 
+  box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+  margin: 30px 0;
+}
+
+.postWrapper {
+  padding: 10px;
+}
+
+.postTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.postTopLeft {
+  display: flex;
+  align-items: center;
+}
+
+.postProfileImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.postUsername {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 10px;
+}
+
+.postDate {
+  font-size: 12px;
+}
+
+.postCenter {
+  margin: 15px 0px;
+  margin-top: 10px;
+}
+
+.postImg {
+  margin-top: 20px;
+  width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+.postBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.postBottomLeft {
+  display: flex;
+  align-items: center;
+}
+
+.likeIcon {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.postLikeCounter {
+  font-size: 15px;
+}
+
+.postCommenttext {
+  cursor: pointer;
+  border-bottom: 1px dashed gray;
+  font-size: 15px;
 }
