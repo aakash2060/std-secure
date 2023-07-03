@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -6,10 +6,13 @@ import Login from "./pages/Login";
 import CreatePost from "./pages/CreatePost";
 import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import Landing from "./pages/Landing";
 import Posts from "./pages/Posts";
 import ViewPost from "./pages/ViewPost";
+import "./auth/create-admin";
+import IsAuth from "./auth/isAuth";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 function App() {
   const AUTO_LOGOUT_TIME = 60 * 30 * 1000; // 30 min
@@ -17,6 +20,14 @@ function App() {
     const storedAuth = localStorage.getItem("isAuth");
     return storedAuth ? JSON.parse(storedAuth) : false;
   });
+  const [isAdmin, setisAdmin] = useState(false);
+
+  const uid = localStorage.getItem("uid") || "";
+
+  function Unauthorized() {
+    return window.alert("UNAUTHORIZED. CALLING 911");
+  }
+
   const signUserOut = () => {
     signOut(auth).then(() => {
       localStorage.clear();
@@ -24,6 +35,22 @@ function App() {
       window.location.pathname = "/";
     });
   };
+
+  const checkAdmin = async () => {
+    const userDocRef = collection(db, "users");
+    const getUser = await getDocs(userDocRef);
+    getUser.forEach((doc) => {
+      if (doc.data().id == uid) {
+        if (doc.data().isAdmin == true) {
+          setisAdmin(true);
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    checkAdmin();
+  }, [uid]);
 
   useEffect(() => {
     let timer;
@@ -50,7 +77,11 @@ function App() {
         ) : (
           <>
             <Link to="/posts">Post</Link>
-            <Link to="/createpost">Create Post</Link>
+            {isAdmin && (
+              <div>
+                <Link to="/createpost">Create Post</Link>
+              </div>
+            )}
             <Link onClick={signUserOut}>Log Out</Link>
           </>
         )}
@@ -60,7 +91,11 @@ function App() {
         <Route path="/posts" element={<Posts isAuth={isAuth} />} />
         <Route path="/view" element={<ViewPost />} />
         <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
-        <Route path="/createpost" element={<CreatePost isAuth={isAuth} />} />
+        {isAdmin ? (
+          <Route path="/createpost" element={<CreatePost isAuth={isAuth} />} />
+        ) : (
+          <Route path="/createpost" element={<Unauthorized />} />
+        )}
       </Routes>
     </>
   );

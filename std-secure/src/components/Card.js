@@ -6,6 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Card({ postLists, onDelete, isAuth }) {
   const navigate = useNavigate();
+  const uid = localStorage.getItem("uid") || ""
+
+
 
   const openPost = (postId) => {
     sessionStorage.setItem("postId", postId);
@@ -27,7 +30,7 @@ export default function Card({ postLists, onDelete, isAuth }) {
                   </span>
                 </div>
                 <div className="postTopRight">
-                  {isAuth && post.author.id === auth.currentUser.uid && (
+                  {isAuth && post.author.id === uid && (
                     <button
                       className="btn delete-button"
                       onClick={() => {
