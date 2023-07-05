@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { db } from "../firebase";
 import Linkify from "react-linkify";
+import { Button, Modal } from "react-bootstrap";
 
 function ViewPost() {
   // const location = useLocation();
@@ -14,6 +15,9 @@ function ViewPost() {
   // const postId = location.state.postId.toString();
   const [post, setPost] = useState(null);
   const [show, setShow] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPasswordModal, setShowPasswordModal] = useState(true);
+
   let pass = "";
 
   const getPosts = async () => {
@@ -26,18 +30,7 @@ function ViewPost() {
   useEffect(() => {
     const fetchData = async () => {
       await getPosts();
-      if (pass.length !== 0) {
-        const password = window.prompt(
-          "Please enter the password to enter the website:"
-        );
-        if (password === pass) {
-          setShow(true);
-        } else {
-          alert("Incorrect password. Access denied.");
-        }
-      } else {
-        setShow(true);
-      }
+      setShowPasswordModal(true);
     };
 
     fetchData();
@@ -51,10 +44,49 @@ function ViewPost() {
     };
   }, []);
 
+  const handlePasswordSubmit = () => {
+    const correctPassword = post?.password;
+    if (password === correctPassword) {
+      setShow(true);
+      setShowPasswordModal(false);
+    } else {
+      alert("Incorrect password. Access denied.");
+    }
+  };
+
   if (!post) return null;
 
   return (
     <>
+      <Modal show={showPasswordModal} keyboard={false}>
+        <Modal.Header>
+          <Modal.Title>Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Enter the password to get access
+          <br />
+          <input
+            style={{
+              borderRadius: "4px",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              padding: "5px",
+              width: "100%",
+              maxWidth: "200px",
+              boxSizing: "border-box",
+            }}
+            type="password"
+            placeholder="******"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></input>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handlePasswordSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       {show && (
         <div className="homepage">
           <div className="post" style={{ height: "90vh" }}>
@@ -82,7 +114,7 @@ function ViewPost() {
                 {post.postText}
               </Linkify>
             </div>
-            <h3>@{post.author.name}</h3>
+            {/* <h3>@{post.author.name}</h3> */}
           </div>
         </div>
       )}
