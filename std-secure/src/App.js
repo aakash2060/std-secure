@@ -11,8 +11,10 @@ import Landing from "./pages/Landing";
 import Posts from "./pages/Posts";
 import ViewPost from "./pages/ViewPost";
 import "./auth/create-admin";
-import IsAuth from "./auth/isAuth";
+import "react-toastify/dist/ReactToastify.css";
+
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   const AUTO_LOGOUT_TIME = 60 * 30 * 1000; // 30 min
@@ -24,10 +26,11 @@ function App() {
 
   const uid = localStorage.getItem("uid") || "";
 
-  function Unauthorized() {
-    return window.alert("UNAUTHORIZED. CALLING 911");
-  }
-
+  const Unauthorized = () => {
+    toast.error("Unauthorized!!!", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+  };
   const signUserOut = () => {
     signOut(auth).then(() => {
       localStorage.clear();
@@ -77,15 +80,13 @@ function App() {
         ) : (
           <>
             <Link to="/posts">Post</Link>
-            {isAdmin && (
-              <div>
-                <Link to="/createpost">Create Post</Link>
-              </div>
-            )}
+            {isAdmin && <Link to="/createpost">Create Post</Link>}
             <Link onClick={signUserOut}>Log Out</Link>
           </>
         )}
       </nav>
+      <ToastContainer />
+
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/posts" element={<Posts isAuth={isAuth} />} />

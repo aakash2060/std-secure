@@ -16,15 +16,19 @@ import {
 function Login({ setIsAuth }) {
   const navigate = useNavigate();
   const postCollectionRef = collection(db, "users");
+
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider).then(async (result) => {
-      console.log("🚀 ~ file: Login.js:10 ~ signInWithPopup ~ result:", auth);
       localStorage.setItem("isAuth", true);
       setIsAuth(true);
+
       const name = auth.currentUser.displayName;
       const email = auth.currentUser.email;
       const id = auth.currentUser.uid;
       const date = serverTimestamp();
+      const uid = auth.currentUser.uid;
+      localStorage.setItem("uid", uid);
+      
 
       const querySnapshot = await getDocs(
         query(postCollectionRef, where("email", "==", email))
@@ -36,6 +40,7 @@ function Login({ setIsAuth }) {
           date,
           name,
           email,
+          isAdmin: false,
         });
       } else {
         await addDoc(postCollectionRef, {
@@ -43,6 +48,7 @@ function Login({ setIsAuth }) {
           date,
           name,
           email,
+          isAdmin: false,
         });
       }
 
