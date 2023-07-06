@@ -11,20 +11,18 @@ import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 
-function Posts(props) {
-  const { isAuth } = props;
+function Posts({ isAuth, isAdmin }) {
   const navigate = useNavigate();
   const [postLists, setPostList] = useState([]);
   const [loading, isLoading] = useState(true);
   const postsCollectionRef = collection(db, "posts");
 
   async function deletePost(id) {
-    if (window.confirm("Are you sure you want to delete this post?")) {
-      const postDoc = doc(db, "posts", id);
-      await deleteDoc(postDoc);
-      getPosts();
-    }
+    const postDoc = doc(db, "posts", id);
+    await deleteDoc(postDoc);
+    getPosts();
   }
+
   const getPosts = async () => {
     const q = query(postsCollectionRef, orderBy("date", "desc"));
     const data = await getDocs(q);
@@ -54,7 +52,12 @@ function Posts(props) {
           </strong>
         </div>
       ) : (
-        <Card postLists={postLists} onDelete={deletePost} isAuth={isAuth} />
+        <Card
+          postLists={postLists}
+          onDelete={deletePost}
+          isAuth={isAuth}
+          isAdmin={isAdmin}
+        />
       )}
     </div>
   );

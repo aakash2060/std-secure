@@ -1,36 +1,31 @@
 import { doc, getDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { db } from "../firebase";
 import Linkify from "react-linkify";
 import { Button, Modal } from "react-bootstrap";
 
 function ViewPost() {
-  // const location = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
-  // const postId = queryParams.get("postId");
-
   const postId = sessionStorage.getItem("postId");
 
-  // const postId = location.state.postId.toString();
   const [post, setPost] = useState(null);
   const [show, setShow] = useState(false);
   const [password, setPassword] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(true);
 
-  let pass = "";
-
   const getPosts = async () => {
     const postDoc = doc(db, "posts", postId);
     const postData = await getDoc(postDoc);
     setPost(postData.data());
-    pass = postData.data().password;
+    if (postData.data().password.length == 0) {
+      setShowPasswordModal(false);
+      setShow(true);
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       await getPosts();
-      setShowPasswordModal(true);
+      // setShowPasswordModal(true);
     };
 
     fetchData();
@@ -45,8 +40,8 @@ function ViewPost() {
   }, []);
 
   const handlePasswordSubmit = () => {
-    const correctPassword = post?.password;
-    if (password === correctPassword) {
+    let correctPassword = post.password;
+    if (password == correctPassword) {
       setShow(true);
       setShowPasswordModal(false);
     } else {
@@ -103,6 +98,7 @@ function ViewPost() {
               <Linkify
                 componentDecorator={(decoratedHref, key) => (
                   <iframe
+                    title="key"
                     key={key}
                     id={postId}
                     src={decoratedHref}

@@ -273,7 +273,9 @@ textarea {
 .delete-button:hover {
   color: red;
 }
-
+.edit-button:hover {
+  color: green;
+}
 
 .post {
   width: 100%;

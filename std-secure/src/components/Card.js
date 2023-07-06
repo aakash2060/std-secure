@@ -1,18 +1,25 @@
-import React from "react";
-import { auth } from "../firebase";
-import { FaTrashCan, FaUserTie } from "react-icons/fa6";
+import React, { useState } from "react";
+import { FaPencil, FaTrashCan, FaUserTie } from "react-icons/fa6";
 import Linkify from "react-linkify";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Button, Modal } from "react-bootstrap";
 
-export default function Card({ postLists, onDelete, isAuth }) {
+export default function Card({ postLists, onDelete, isAuth, isAdmin }) {
   const navigate = useNavigate();
-  const uid = localStorage.getItem("uid") || ""
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
 
+  const uid = localStorage.getItem("uid") || "";
 
   const openPost = (postId) => {
     sessionStorage.setItem("postId", postId);
     window.open("/view", "_blank");
+  };
+
+  const handleDelete = (props) => {
+    onDelete(props);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -30,15 +37,26 @@ export default function Card({ postLists, onDelete, isAuth }) {
                   </span>
                 </div>
                 <div className="postTopRight">
-                  {isAuth && post.author.id === uid && (
-                    <button
-                      className="btn delete-button"
-                      onClick={() => {
-                        onDelete(post.id);
-                      }}
-                    >
-                      <FaTrashCan />
-                    </button>
+                  {isAuth && (post.author.id === uid || isAdmin) && (
+                    <div>
+                      <button
+                        className="btn delete-button"
+                        onClick={() => {
+                          setDeleteId(post.id);
+                          setShowDeleteModal(true);
+                        }}
+                      >
+                        <FaTrashCan />
+                      </button>
+                      <button
+                        className="btn edit-button"
+                        onClick={() => {
+                          onDelete(post.id);
+                        }}
+                      >
+                        <FaPencil />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -53,16 +71,14 @@ export default function Card({ postLists, onDelete, isAuth }) {
                 <div className="postTextContainer">
                   <Linkify
                     componentDecorator={(decoratedHref, decoratedText, key) => (
-                    
-                        <a
-                          key={key}
-                          href={""}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {/* Open Post to See the Link */}
-                        </a>
-                     
+                      <a
+                        key={key}
+                        href={""}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {/* Open Post to See the Link */}
+                      </a>
                     )}
                   >
                     {post.postText}
@@ -91,6 +107,33 @@ export default function Card({ postLists, onDelete, isAuth }) {
           </div>
         );
       })}
+
+      <Modal
+        show={showDeleteModal}
+        keyboard={false}
+        onHide={() => setShowDeleteModal(false)}
+      >
+        <Modal.Header>
+          <Modal.Title>Delete Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure to delete this post?
+          <br />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => handleDelete(deleteId)}>
+            Delete
+          </Button>
+          <Button
+            variant="info"
+            onClick={() => {
+              setShowDeleteModal(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
