@@ -40,7 +40,6 @@ function Login({ setIsAuth }) {
           date,
           name,
           email,
-          isAdmin: false,
         });
       } else {
         await addDoc(postCollectionRef, {

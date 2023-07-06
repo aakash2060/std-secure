@@ -1,6 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
-function Landing() {
+function Landing({ isAuth }) {
+  const error = () => {
+    toast.warning("Login to see the announcements!!!", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+  };
+  useEffect(() => {
+    if (!isAuth) {
+      toast.warning("Login to see the announcements!!!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  }, [isAuth]);
   return (
     <div
       style={{
@@ -14,12 +28,12 @@ function Landing() {
         transform: "translate(-50%, -50%)",
       }}
     >
+
       <center>
         <p>
           <b>HI STUDENTS THIS IS YOUR HOME PAGE.</b>
           <br />
           <br />
-          Login to see the announcements
           <br />
           <br />
           {/* <button to='/login'> LOGIN</button> */}

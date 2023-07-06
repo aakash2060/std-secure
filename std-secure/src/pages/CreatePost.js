@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { storage } from "../firebase";
 import "firebase/firestore";
 import "firebase/storage"; // <----
-import "../App.css"
+import "../App.css";
 
 function CreatePost(props) {
   const { isAuth } = props;
+  
   const [title, setTitle] = useState("");
   const [postText, setPostText] = useState("");
   const [password, setPassword] = useState("");

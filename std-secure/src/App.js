@@ -88,8 +88,8 @@ function App() {
       <ToastContainer />
 
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/posts" element={<Posts isAuth={isAuth} />} />
+        <Route path="/" element={<Landing isAuth={isAuth}/>} />
+        <Route path="/posts" element={<Posts isAuth={isAuth} isAdmin={isAdmin}/>} />
         <Route path="/view" element={<ViewPost />} />
         <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
         {isAdmin ? (
