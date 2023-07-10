@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { FaPencil, FaTrashCan, FaUserTie } from "react-icons/fa6";
 import Linkify from "react-linkify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
+import CreatePost from "../pages/CreateEditPost";
 
 export default function Card({ postLists, onDelete, isAuth, isAdmin }) {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ export default function Card({ postLists, onDelete, isAuth, isAdmin }) {
                   {isAuth && (post.author.id === uid || isAdmin) && (
                     <div>
                       <button
+                        style={{ padding: "5px 5px" }}
                         className="btn delete-button"
                         onClick={() => {
                           setDeleteId(post.id);
@@ -48,14 +50,17 @@ export default function Card({ postLists, onDelete, isAuth, isAdmin }) {
                       >
                         <FaTrashCan />
                       </button>
-                      <button
-                        className="btn edit-button"
-                        onClick={() => {
-                          onDelete(post.id);
-                        }}
+                      <Link
+                        to={"/createpost"}
+                        state={{ currentState: "edit", id: post.id }}
                       >
-                        <FaPencil />
-                      </button>
+                        <button
+                          className="btn edit-button"
+                          style={{ padding: "0px" }}
+                        >
+                          <FaPencil />
+                        </button>
+                      </Link>
                     </div>
                   )}
                 </div>
