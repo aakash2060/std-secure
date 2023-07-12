@@ -22,6 +22,7 @@ function App() {
     return storedAuth ? JSON.parse(storedAuth) : false;
   });
   const [isAdmin, setisAdmin] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
   const uid = localStorage.getItem("uid") || "";
   const [loading, setLoading] = useState(true); // Add loading state
 
@@ -29,6 +30,16 @@ function App() {
     toast.error("Unauthorized!!!", {
       position: toast.POSITION.TOP_CENTER,
     });
+  };
+  const Unverified = () => {
+    toast.error(
+      "USER NOT APPROVED!!! Please contact with the admin to get the approval !!!",
+      {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: false,
+        theme: "colored",
+      }
+    );
   };
 
   const signUserOut = () => {
@@ -40,19 +51,35 @@ function App() {
   };
 
   useEffect(() => {
+    const userDocRef = collection(db, "users");
     const checkAdmin = async () => {
-      const userDocRef = collection(db, "users");
       const getUser = await getDocs(userDocRef);
-      getUser.forEach((doc) => {
-        if (doc.data().id === uid) {
-          if (doc.data().isAdmin === true) {
+
+      getUser.forEach((currentUser) => {
+        if (currentUser.data().id === uid) {
+          if (currentUser.data().isAdmin === true) {
             setisAdmin(true);
           }
         }
       });
-      setLoading(false); // Set loading to false when check is completed
     };
-    checkAdmin();
+
+    const checkApproved = async () => {
+      const getUser = await getDocs(userDocRef);
+      getUser.forEach((currentUser) => {
+        if (currentUser.data().id == uid) {
+          if (currentUser.data().isApproved == true) {
+            setIsApproved(true);
+          }
+        }
+      });
+    };
+
+    const checkLoading = async () => {
+      await Promise.all([checkAdmin(), checkApproved()]);
+      setLoading(false);
+    };
+    checkLoading();
   }, [uid]);
 
   useEffect(() => {
@@ -82,7 +109,7 @@ function App() {
           <Link to="/login">Login</Link>
         ) : (
           <>
-            <Link to="/posts">Post</Link>
+            {isApproved && <Link to="/posts">Post</Link>}
             {isAdmin && (
               <>
                 <Link to="/createpost">Create Post</Link>
@@ -94,30 +121,46 @@ function App() {
         )}
       </nav>
       <ToastContainer />
+      {isAuth ? (
+        <>
+          {isApproved ? (
+            <Routes>
+              <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
 
-      <Routes>
-        <Route path="/" element={<Landing isAuth={isAuth} />} />
-        <Route
-          path="/posts"
-          element={<Posts isAuth={isAuth} isAdmin={isAdmin} />}
-        />
-        <Route path="/view" element={<ViewPost />} />
-        <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
-        {isAdmin ? (
-          <>
-            <Route
-              path="/createpost"
-              element={<CreatePost isAuth={isAuth} />}
-            />
-            <Route
-              path="/admindashboard"
-              element={<Admin isAuth={isAuth} />}
-            />
-          </>
-        ) : (
-          <Route path="/createpost" element={<Unauthorized />} />
-        )}
-      </Routes>
+              <Route path="/" element={<Landing isAuth={isAuth} />} />
+              <Route
+                path="/posts"
+                element={<Posts isAuth={isAuth} isAdmin={isAdmin} />}
+              />
+              <Route path="/view" element={<ViewPost />} />
+              {isAdmin ? (
+                <>
+                  <Route
+                    path="/createpost"
+                    element={<CreatePost isAuth={isAuth} />}
+                  />
+                  <Route
+                    path="/admindashboard"
+                    element={<Admin isAuth={isAuth} />}
+                  />
+                </>
+              ) : (
+                <Route path="/createpost" element={<Unauthorized />} />
+              )}
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="/" element={<Unverified />} />
+              <Route path="/posts" element={<Unverified />} />
+            </Routes>
+          )}
+        </>
+      ) : (
+        <Routes>
+          <Route path="/" element={<Landing isAuth={isAuth} />} />
+          <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+        </Routes>
+      )}
     </>
   );
 }

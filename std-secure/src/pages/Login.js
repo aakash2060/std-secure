@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { auth, db, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { signInWithPopup } from "firebase/auth";
@@ -16,6 +16,7 @@ import {
 function Login({ setIsAuth }) {
   const navigate = useNavigate();
   const postCollectionRef = collection(db, "users");
+  const [currentUser, setCurrentUser] = useState("");
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider).then(async (result) => {
@@ -28,7 +29,6 @@ function Login({ setIsAuth }) {
       const date = serverTimestamp();
       const uid = auth.currentUser.uid;
       localStorage.setItem("uid", uid);
-      
 
       const querySnapshot = await getDocs(
         query(postCollectionRef, where("email", "==", email))
@@ -48,7 +48,7 @@ function Login({ setIsAuth }) {
           name,
           email,
           isAdmin: false,
-          isApproved: false
+          isApproved: false,
         });
       }
 

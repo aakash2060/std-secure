@@ -10,8 +10,6 @@ import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import {
   FaArrowRight,
-  FaCheck,
-  FaCircleXmark,
   FaPencil,
   FaSquareCheck,
   FaSquareXmark,
@@ -20,7 +18,6 @@ import {
 import { Button, Modal } from "react-bootstrap";
 
 function Admin() {
-  const userRef = collection(db, "users");
   const [users, Setusers] = useState([]);
   const [selectOption, setSelectOption] = useState("all");
   const [isLoading, setisLoading] = useState(true);
@@ -38,11 +35,11 @@ function Admin() {
 
   let filteredUsers = users;
   if (selectOption === "admin") {
-    filteredUsers = users.filter((user) => user.isAdmin && user.id != uid);
+    filteredUsers = users.filter((user) => user.isAdmin && user.id !== uid);
   } else if (selectOption === "user") {
-    filteredUsers = users.filter((user) => !user.isAdmin && user.id != uid);
+    filteredUsers = users.filter((user) => !user.isAdmin && user.id !== uid);
   } else if (selectOption === "all") {
-    filteredUsers = users.filter((user) => user.id != uid);
+    filteredUsers = users.filter((user) => user.id !== uid);
   }
 
   const handleOptionChange = (event) => {

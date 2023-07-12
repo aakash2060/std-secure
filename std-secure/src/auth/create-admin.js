@@ -39,10 +39,12 @@ const checkAdminEmail = async () => {
       }
     } else {
       await addDoc(postCollectionRef, {
+        id: 1,
         name: "Admin",
         email: adminEmail,
         password,
         isAdmin: true,
+        isApproved: true,
       });
       console.log("Admin with email " + adminEmail + " created successfully");
     }
