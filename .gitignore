@@ -1,1 +1,10 @@
 std-secure/.env
+database.rules.json
+firebase-debug.log
+firestore.indexes.json
+firestore.rules
+std-secure/.firebaserc
+std-secure/firebase.json
+std-secure/firestore.indexes.json
+std-secure/firestore.rules
+std-secure/.firebase/hosting.YnVpbGQ.cache

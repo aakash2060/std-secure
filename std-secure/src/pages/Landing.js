@@ -3,11 +3,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 function Landing({ isAuth }) {
-  const error = () => {
-    toast.warning("Login to see the announcements!!!", {
-      position: toast.POSITION.TOP_CENTER,
-    });
-  };
   useEffect(() => {
     if (!isAuth) {
       toast.warning("Login to see the announcements!!!", {
@@ -28,7 +23,6 @@ function Landing({ isAuth }) {
         transform: "translate(-50%, -50%)",
       }}
     >
-
       <center>
         <p>
           <b>HI STUDENTS THIS IS YOUR HOME PAGE.</b>

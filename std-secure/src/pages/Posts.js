@@ -10,6 +10,8 @@ import {
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
+import { ToastContainer } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 function Posts({ isAuth, isAdmin }) {
   const navigate = useNavigate();
@@ -43,6 +45,8 @@ function Posts({ isAuth, isAdmin }) {
 
   return (
     <div className="homePage">
+      <ToastContainer />
+
       {postLists.length === 0 ? (
         <div className="homepage-announcement">
           <strong>

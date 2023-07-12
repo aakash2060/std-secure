@@ -48,6 +48,7 @@ function Login({ setIsAuth }) {
           name,
           email,
           isAdmin: false,
+          isApproved: false
         });
       }
 
