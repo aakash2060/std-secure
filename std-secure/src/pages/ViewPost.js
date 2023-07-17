@@ -16,7 +16,7 @@ function ViewPost() {
     const postDoc = doc(db, "posts", postId);
     const postData = await getDoc(postDoc);
     setPost(postData.data());
-    if (postData.data().password.length == 0) {
+    if (postData.data().password.length === 0) {
       setShowPasswordModal(false);
       setShow(true);
     }
@@ -41,7 +41,7 @@ function ViewPost() {
 
   const handlePasswordSubmit = () => {
     let correctPassword = post.password;
-    if (password == correctPassword) {
+    if (password === correctPassword) {
       setShow(true);
       setShowPasswordModal(false);
     } else {

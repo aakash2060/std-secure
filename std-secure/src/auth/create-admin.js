@@ -33,9 +33,9 @@ const checkAdminEmail = async () => {
       if (!isAdmin) {
         const userDocRef = doc(postCollectionRef, userDoc.id);
         await updateDoc(userDocRef, { isAdmin: true });
-        console.log("User with email " + adminEmail + " is now a admin");
+        // console.log("User with email " + adminEmail + " is now a admin");
       } else if (isAdmin) {
-        console.log("User with email " + adminEmail + " is already an admin");
+        // console.log("User with email " + adminEmail + " is already an admin");
       }
     } else {
       await addDoc(postCollectionRef, {
@@ -46,7 +46,7 @@ const checkAdminEmail = async () => {
         isAdmin: true,
         isApproved: true,
       });
-      console.log("Admin with email " + adminEmail + " created successfully");
+      // console.log("Admin with email " + adminEmail + " created successfully");
     }
   }
 };

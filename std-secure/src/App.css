@@ -216,7 +216,8 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90vh;
+  height: 85vh;
+  width: 100%;
 }
 
 .post-box {
@@ -224,7 +225,11 @@ textarea {
   border-radius: 8px;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
   padding: 24px;
-  width: 400px;
+  width: 600px;
+
+  @media screen and (max-width: 600px) {
+    width: 400px;
+  }
 }
 
 .post-title {
@@ -233,13 +238,16 @@ textarea {
 }
 
 .form-group {
+  display: flex;
+
   margin-bottom: 16px;
+  align-items: center;
 }
 
 .form-label {
   display: block;
-  font-size: 18px;
-  margin-bottom: 8px;
+  font-size: 15px;
+  margin-bottom: 0px;
 }
 
 .form-input,
@@ -249,6 +257,24 @@ textarea {
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.input-date,
+.input-time {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.time-label {
+  display: block;
+  font-size: 15px;
+  margin-left: 15%;
+}
+.date-label {
+  display: block;
+  font-size: 15px;
+  margin-left: 2%;
 }
 
 .btn {
@@ -365,8 +391,41 @@ textarea {
 }
 .option-container {
   border-radius: 15px;
-  color:#0062cc;
+  color: #0062cc;
   font-size: 13px;
   max-width: auto;
+}
 
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #333;
+  width: 100%;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: Helvetica;
+  color: #ff7700;
+  padding-left: 15px;
+}
+
+.nav-items {
+  display: flex;
+  gap: 1rem;
+  padding-right: 5px;
+}
+
+.nav-items > * {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  padding-right: 5px;
+}
+
+.nav-items > *:hover {
+  color: #ccc;
 }

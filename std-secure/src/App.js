@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import CreatePost from "./pages/CreateEditPost";
 import { useEffect, useState } from "react";
@@ -67,8 +67,8 @@ function App() {
     const checkApproved = async () => {
       const getUser = await getDocs(userDocRef);
       getUser.forEach((currentUser) => {
-        if (currentUser.data().id == uid) {
-          if (currentUser.data().isApproved == true) {
+        if (currentUser.data().id === uid) {
+          if (currentUser.data().isApproved === true) {
             setIsApproved(true);
           }
         }
@@ -104,6 +104,8 @@ function App() {
   return (
     <>
       <nav>
+        <div className="logo"> SECURE</div>
+        <div className="nav-items">
         <Link to="/">Home</Link>
         {!isAuth ? (
           <Link to="/login">Login</Link>
@@ -119,6 +121,7 @@ function App() {
             <Link onClick={signUserOut}>Log Out</Link>
           </>
         )}
+        </div>
       </nav>
       <ToastContainer />
       {isAuth ? (

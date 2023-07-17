@@ -9,58 +9,72 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useLocation, useNavigate } from "react-router-dom";
-import { storage } from "../firebase";
-
 import "firebase/firestore";
 import "firebase/storage"; // <----
 import "../App.css";
 import { toast } from "react-toastify";
+import { DateTime } from "luxon";
 
 function CreatePost(props) {
   const location = useLocation();
   let isEditing = false;
 
   const { isAuth } = props;
-  const [post, setPost] = useState("");
+  // const [post, setPost] = useState("");
   const [title, setTitle] = useState("");
   const [postText, setPostText] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
-  const [file, setFile] = useState("");
+  // const [file, setFile] = useState("");
   const [error, setError] = useState("");
+  const [edate, setDate] = useState("");
+  const [time, setTime] = useState("");
+
   let postid = "";
 
   if (location && location.state && location.state.currentState) {
     isEditing = true;
     postid = location.state.id;
   }
-
+  const combinedDateTime = `${edate}T${time}`;
+  const utcDateTime = new Date(combinedDateTime).toUTCString();
+  
   useEffect(() => {
     if (isEditing) {
       const getPosts = async () => {
         const postDoc = doc(db, "posts", postid);
         const postData = await getDoc(postDoc);
-        setPost(postData.data());
+        // setPost(postData.data());
         setTitle(postData.data().title);
         setPostText(postData.data().postText);
+        setDate(
+          DateTime.fromJSDate(new Date(postData.data().expiryDate)).toFormat(
+            "yyyy-MM-dd"
+          )
+        );
+        setTime(
+          DateTime.fromJSDate(new Date(postData.data().expiryDate)).toFormat(
+            "T"
+          )
+        );
       };
 
       getPosts();
     }
   }, [isEditing, postid]);
 
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-  };
-  const upload = async () => {
-    if (file) {
-      const storageRef = storage().ref();
-      const fileRef = storageRef.child(`files/${file.name}`);
-      await fileRef.put(file);
-      console.log("File uploaded successfully!");
-    }
-  };
+  // const handleFileChange = (event) => {
+  //   const selectedFile = event.target.files[0];
+  //   setFile(selectedFile);
+  // };
+  // const upload = async () => {
+  //   if (file) {
+  //     const storageRef = storage().ref();
+  //     const fileRef = storageRef.child(`files/${file.name}`);
+  //     await fileRef.put(file);
+  //     console.log("File uploaded successfully!");
+  //   }
+  // };
 
   const postCollectionRef = collection(db, "posts");
   const navigate = useNavigate();
@@ -81,6 +95,7 @@ function CreatePost(props) {
         },
         password,
         date: serverTimestamp(),
+        expiryDate: utcDateTime,
       });
       navigate("/posts");
     }
@@ -102,6 +117,7 @@ function CreatePost(props) {
         },
         password,
         date: serverTimestamp(),
+        expiryDate: utcDateTime,
       });
       toast.success("Successfully Posted!", {
         position: "top-center",
@@ -126,6 +142,14 @@ function CreatePost(props) {
     setError(error);
   };
 
+  const changeDate = (e) => {
+    setDate(e.target.value);
+  };
+
+  const changeTime = (e) => {
+    setTime(e.target.value);
+  };
+
   const handleConfirmPasswordChange = (event) => {
     let error = {};
     setconfirmPassword(event.target.value);
@@ -148,7 +172,7 @@ function CreatePost(props) {
     if (!isAuth) {
       navigate("/login");
     }
-  }, []);
+  }, [isAuth,navigate]);
 
   return (
     <>
@@ -159,7 +183,7 @@ function CreatePost(props) {
               {isEditing ? "Edit Post" : "Create A Post"}
             </h1>
             <div className="form-group">
-              <label className="form-label">Title:</label>
+              {/* <label className="form-label">Title:</label> */}
               <input
                 className="form-input"
                 placeholder="Title..."
@@ -171,20 +195,45 @@ function CreatePost(props) {
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Post:</label>
+              {/* <label className="form-label">Post:</label> */}
               <textarea
                 className="form-textarea"
                 required
                 style={{ width: "", height: "124px" }}
-                placeholder="Post..."
+                placeholder="Description... "
                 value={postText}
                 onChange={(event) => {
                   setPostText(event.target.value);
                 }}
               />
             </div>
+
+            <div className="form-group">
+              <label className="date-label">Expiry Date:</label>
+              &nbsp;&nbsp;
+              <input
+                type="date"
+                className="input-date"
+                name="date"
+                id="date"
+                placeholder=""
+                value={edate}
+                onChange={changeDate}
+              ></input>
+              <label className="time-label">Expiry Time:</label>
+              &nbsp;&nbsp;
+              <input
+                type="time"
+                className="input-time"
+                name="time"
+                id="time"
+                placeholder=""
+                value={time}
+                onChange={changeTime}
+              ></input>
+            </div>
             <div>
-              <div className="form-group">
+              <div className="date-group">
                 <label className="form-label">
                   {isEditing ? "Reset Password:" : "Password:"}
                 </label>

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 
 function Landing({ isAuth }) {
   useEffect(() => {

@@ -55,6 +55,7 @@ function Admin() {
 
       const userRef = doc(usersCollectionRef, querySnapshot.docs[0].id);
       const currentIsApproved = querySnapshot.docs[0].data().isApproved;
+      
       const updatedIsApproved = !currentIsApproved; // Toggle the value
 
       await updateDoc(userRef, { isApproved: updatedIsApproved });

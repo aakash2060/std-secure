@@ -11,7 +11,6 @@ import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import { ToastContainer } from "react-bootstrap";
-import { toast } from "react-toastify";
 
 function Posts({ isAuth, isAdmin }) {
   const navigate = useNavigate();
