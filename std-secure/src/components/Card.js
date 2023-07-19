@@ -1,15 +1,28 @@
 import React, { useState } from "react";
-import { FaPencil, FaTrashCan, FaUserTie } from "react-icons/fa6";
+import {
+  FaPencil,
+  FaTrashCan,
+  FaUserTie,
+  FaMagnifyingGlass,
+  FaThumbsUp,
+  FaRegThumbsUp,
+} from "react-icons/fa6";
 import Linkify from "react-linkify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
-import CreatePost from "../pages/CreateEditPost";
+import Countdown from "react-countdown";
 
-export default function Card({ postLists, onDelete, isAuth, isAdmin }) {
-  const navigate = useNavigate();
-
+export default function Card({
+  postLists,
+  onDelete,
+  isAuth,
+  isAdmin,
+  setPostLists,
+  getPosts,
+}) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+  const [search, setSearch] = useState("");
 
   const uid = localStorage.getItem("uid") || "";
 
@@ -18,97 +31,247 @@ export default function Card({ postLists, onDelete, isAuth, isAdmin }) {
     window.open("/view", "_blank");
   };
 
+  const onChangeSearch = (e) => {
+    const searchValue = e.target.value;
+    setSearch(searchValue);
+    e.preventDefault();
+    const searchRegex = new RegExp(search, "i");
+    const filteredPosts = postLists.filter((post) =>
+      post.title.match(searchRegex)
+    );
+    if (filteredPosts.length !== 0) {
+      setPostLists(filteredPosts);
+    }
+    if (searchValue === "") {
+      getPosts();
+    }
+  };
+
   const handleDelete = (props) => {
     onDelete(props);
     setShowDeleteModal(false);
   };
+  const handleLikeClick = (postId) => {
+    setPostLists((prevPostLists) => {
+      return prevPostLists.map((post) =>
+        post.id === postId ? { ...post, liked: !post.liked } : post
+      );
+    });
+  };
+
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    if (completed) {
+      return;
+    } else {
+      return (
+        <div>
+          <div className="countdown-timer">
+            <span style={{ color: "black", opacity: "0.8" }}>
+              Time Remaining &nbsp;
+            </span>
+            {hours}:&nbsp;{minutes}:&nbsp;{seconds}&nbsp;&nbsp;
+          </div>
+
+          {/* <div className="countdown-units">
+          {hours === 1 ? "hour" : "hours"} {minutes === 1 ? "minute" : "minutes"}{" "}
+          {seconds === 1 ? "second" : "seconds"}
+        </div> */}
+        </div>
+      );
+    }
+  };
 
   return (
     <div>
+      <form onSubmit={onChangeSearch}>
+        <div className="search-bar">
+          <input
+            type="text"
+            value={search}
+            onChange={onChangeSearch}
+            style={{ width: "160px" }}
+            placeholder="Search Topic..."
+          />
+          <span className="search-icon">
+            <FaMagnifyingGlass />
+          </span>
+        </div>
+      </form>
       {postLists.map((post, index) => {
         return (
           <div className="post" key={index}>
-            <div className="postWrapper">
-              <div className="postTop">
-                <div className="postTopLeft">
-                  <FaUserTie />
-                  <span className="postUsername">{post.author.name}</span>
-                  <span className="postDate">
-                    {post.date.toDate().toLocaleString()}
-                  </span>
-                </div>
-                <div className="postTopRight">
-                  {isAuth && (post.author.id === uid || isAdmin) && (
-                    <div>
-                      <button
-                        style={{ padding: "5px 5px" }}
-                        className="btn delete-button"
-                        onClick={() => {
-                          setDeleteId(post.id);
-                          setShowDeleteModal(true);
-                        }}
-                      >
-                        <FaTrashCan />
-                      </button>
-                      <Link
-                        to={"/createpost"}
-                        state={{ currentState: "edit", id: post.id }}
-                      >
+            {post.expiryDate === undefined ||
+            new Date(post.expiryDate).getTime() > new Date() ? (
+              <div className="postWrapper">
+                <div className="postTop">
+                  <div className="postTopLeft">
+                    <FaUserTie />
+                    <span className="postUsername">{post.author.name}</span>
+                    <span className="postDate">
+                      {post.date.toDate().toLocaleString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <div className="postTopRight">
+                    {/* <div className="hover-message">
+                        Text message will be sent to your contacts
+                      </div> */}
+                    <Countdown date={post.expiryDate} renderer={renderer} />
+
+                    {isAuth && (post.author.id === uid || isAdmin) && (
+                      <div>
                         <button
-                          className="btn edit-button"
-                          style={{ padding: "0px" }}
+                          style={{ padding: "5px 5px" }}
+                          className="btn delete-button"
+                          onClick={() => {
+                            setDeleteId(post.id);
+                            setShowDeleteModal(true);
+                          }}
                         >
-                          <FaPencil />
+                          <FaTrashCan />
                         </button>
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="postHeader">
-                <div className="title">
-                  <h3>
-                    <strong> {post.title}</strong>
-                  </h3>
-                </div>
-              </div>
-              <div className="postCenter">
-                <div className="postTextContainer">
-                  <Linkify
-                    componentDecorator={(decoratedHref, decoratedText, key) => (
-                      <a
-                        key={key}
-                        href={""}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {/* Open Post to See the Link */}
-                      </a>
+                        &nbsp;&nbsp;&nbsp;
+                        <Link
+                          to={"/createpost"}
+                          state={{ currentState: "edit", id: post.id }}
+                        >
+                          <button
+                            className="btn edit-button"
+                            style={{ padding: "0px" }}
+                          >
+                            <FaPencil />
+                          </button>
+                        </Link>
+                      </div>
                     )}
-                  >
-                    {post.postText}
-                  </Linkify>
+                  </div>
                 </div>
-                <center>
-                  <button
-                    type="button"
-                    className="btn btn-outline-info"
-                    onClick={() => openPost([post.id])}
-                  >
-                    Open Post
-                  </button>
-                </center>
+                <div className="postHeader">
+                  <div className="title">
+                    <h3>
+                      <strong> {post.title}</strong>
+                    </h3>
+                  </div>
+                </div>
+                <div className="postCenter">
+                  <div className="postTextContainer">
+                    <Linkify
+                      componentDecorator={(
+                        decoratedHref,
+                        decoratedText,
+                        key
+                      ) => (
+                        <a
+                          key={key}
+                          href={"_blank"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {/* Open Post to See the Link */}
+                        </a>
+                      )}
+                    >
+                      {post.postText}
+                    </Linkify>
+                  </div>
+                  <center>
+                    <button
+                      type="button"
+                      className="btn btn-outline-info"
+                      onClick={() => openPost([post.id])}
+                    >
+                      Open Post
+                    </button>
+                  </center>
+                </div>
+                <div className="postBottom">
+                  <div className="postBottomLeft">
+                    <span className="postLikeCounter"  onClick={() => handleLikeClick(post.id)}>
+                    {post.liked ? <FaThumbsUp color="green" /> : <FaRegThumbsUp />}
+                   
+                    </span>
+                  </div>
+                  <div className="postBottomRight">
+                    <span className="postCommenttext"> comments</span>
+                  </div>
+                </div>
               </div>
-              <div className="postBottom">
-                <div className="postBottomLeft">
-                  bottom left
-                  <span className="postLikeCounter"> people like it</span>
-                </div>
-                <div className="postBottomRight">
-                  <span className="postCommenttext"> comments</span>
+            ) : (
+              <div>
+                <div className="postWrapper">
+                  <div className="postTop">
+                    <div className="postTopLeft">
+                      <FaUserTie />
+                      <span className="postUsername">{post.author.name}</span>
+                      <span className="postDate" style={{ color: "red" }}>
+                        {new Date(post.expiryDate).toLocaleString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          weekday: "long",
+                          year: "numeric",
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        })}
+                      </span>
+                      <div className="hover-message">
+                        <strong>Expired at</strong>
+                      </div>
+                    </div>
+                    <div className="postTopRight">
+                      {isAuth && (post.author.id === uid || isAdmin) && (
+                        <div>
+                          <button
+                            style={{ padding: "5px 5px" }}
+                            className="btn delete-button"
+                            onClick={() => {
+                              setDeleteId(post.id);
+                              setShowDeleteModal(true);
+                            }}
+                          >
+                            <FaTrashCan />
+                          </button>
+                          &nbsp;&nbsp;&nbsp;
+                          <Link
+                            to={"/createpost"}
+                            state={{ currentState: "edit", id: post.id }}
+                          >
+                            <button
+                              className="btn edit-button"
+                              style={{ padding: "0px" }}
+                            >
+                              <FaPencil />
+                            </button>
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="postHeader" style={{ opacity: "0.5" }}>
+                    <div className="title">
+                      <h3>
+                        <strong> {post.title}</strong>
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="postCenter" style={{ opacity: "0.5" }}>
+                    <div className="postTextContainer">
+                      <center>
+                        <p style={{ color: "red", fontSize: "20px" }}>
+                          The post has been expired
+                        </p>
+                      </center>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         );
       })}

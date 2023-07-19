@@ -14,7 +14,7 @@ import { ToastContainer } from "react-bootstrap";
 
 function Posts({ isAuth, isAdmin }) {
   const navigate = useNavigate();
-  const [postLists, setPostList] = useState([]);
+  const [postLists, setPostLists] = useState([]);
   const [loading, isLoading] = useState(true);
   const postsCollectionRef = collection(db, "posts");
 
@@ -27,7 +27,7 @@ function Posts({ isAuth, isAdmin }) {
   const getPosts = async () => {
     const q = query(postsCollectionRef, orderBy("date", "desc"));
     const data = await getDocs(q);
-    setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    setPostLists(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     isLoading(false);
   };
 
@@ -37,7 +37,7 @@ function Posts({ isAuth, isAdmin }) {
     } else {
       getPosts();
     }
-  }, []);
+  }, [setPostLists]);
   if (loading) {
     return <div> </div>;
   }
@@ -60,6 +60,8 @@ function Posts({ isAuth, isAdmin }) {
           onDelete={deletePost}
           isAuth={isAuth}
           isAdmin={isAdmin}
+          setPostLists={setPostLists}
+          getPosts={getPosts}
         />
       )}
     </div>

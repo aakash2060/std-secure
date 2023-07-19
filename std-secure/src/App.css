@@ -151,9 +151,11 @@ textarea {
 }
 
 .homePage {
-  width: 100%;
+  width: 80%;
   min-height: calc(100vh - 80px);
   height: auto;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -181,6 +183,10 @@ textarea {
 
 .postHeader .title {
   flex: 20%;
+}
+.postHeader .title:hover {
+  color: rgb(67, 67, 236);
+  cursor: pointer;
 }
 .postHeader .deletePost {
   flex: 50%;
@@ -210,6 +216,12 @@ textarea {
   transition: 0.3s;
   padding: 2px 16px;
   height: 80vh;
+}
+.post:hover {
+  background-color: rgb(240, 240, 240);
+  max-height: 155%;
+  width: 93%;
+
 }
 
 .post-container {
@@ -259,13 +271,51 @@ textarea {
   border-radius: 4px;
 }
 
+.postTopRight {
+  display: flex;
+  align-items: center;
+}
+
 .input-date,
 .input-time {
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 8px;
 }
+.hover-message {
+  white-space: nowrap;
+  padding-bottom: 10%;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 12px;
+  color: #333;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transform: translateX(-200%);
+}
 
+.postTopLeft:hover .hover-message {
+  opacity: 1;
+}
+.search-bar {
+  position: relative;
+  margin-left: 70%;
+  border-radius: 2px;
+  width: 20px;
+  padding-left: 30px;
+  
+}
+.search-bar input[type="text"]:focus {
+  box-shadow: 0 0 1px rgb(0, 0, 0);
+  
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 165px;
+  transform: translateY(-50%);
+}
 .time-label {
   display: block;
   font-size: 15px;
@@ -285,21 +335,29 @@ textarea {
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  transition: transform 0.2s;
+
 }
 
 .btn-primary {
   background-color: #007bff;
+  transform: scale(1.2);
+
 }
 
 .btn-primary:hover {
   background-color: #0062cc;
+
 }
 
 .delete-button:hover {
   color: red;
+  transform: scale(1.2);
+
 }
 .edit-button:hover {
-  color: green;
+  color: orange;
+  transform: scale(1.2);
 }
 
 .post {
@@ -365,6 +423,48 @@ textarea {
   align-items: center;
 }
 
+
+/* Styling for the countdown container */
+.countdown-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9; /* Set your desired background color */
+  /* padding: 20px; */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+  font-family: Arial, sans-serif;
+}
+
+/* Styling for the countdown label */
+.countdown-label {
+  position: relative;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333; /* Set the color for the label */
+}
+
+/* Styling for the countdown timer */
+.countdown-timer {
+  font-size: 15px;
+  font-weight: bold;
+  color: #5e2b99; /* Set the color for the timer digits */
+  padding-left: -150%;
+
+}
+.countdown-timer:hover {
+  transform: scale(1.1);
+
+}
+
+/* Styling for the countdown units (hours, minutes, seconds) */
+.countdown-units {
+  font-size: 14px;
+  color: #555; /* Set the color for the units text */
+}
+
 .likeIcon {
   width: 24px;
   height: 24px;
@@ -373,8 +473,13 @@ textarea {
 }
 
 .postLikeCounter {
-  font-size: 15px;
+  font-size: 18px;
+  cursor: pointer;
 }
+.postLikeCounter:hover {
+  transform: scale(1.1);
+}
+
 
 .postCommenttext {
   cursor: pointer;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { auth, db, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { signInWithPopup } from "firebase/auth";
@@ -16,7 +16,6 @@ import {
 function Login({ setIsAuth }) {
   const navigate = useNavigate();
   const postCollectionRef = collection(db, "users");
-  const [currentUser, setCurrentUser] = useState("");
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider).then(async (result) => {
