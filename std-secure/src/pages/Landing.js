@@ -1,39 +1,39 @@
 import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 function Landing({ isAuth }) {
   useEffect(() => {
     if (!isAuth) {
       toast.warning("Login to see the announcements!!!", {
         position: toast.POSITION.TOP_CENTER,
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
     }
   }, [isAuth]);
+
   return (
     <div
       style={{
-        color: "green",
-        fontSize: "20px",
-        textAlign: "center",
-        height: "50%",
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
+        backgroundImage: `url(${process.env.REACT_APP_BG_IMAGE})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        zIndex: "-1",
       }}
-    >
-      <center>
-        <p>
-          <b>HI STUDENTS THIS IS YOUR HOME PAGE.</b>
-          <br />
-          <br />
-          <br />
-          <br />
-          {/* <button to='/login'> LOGIN</button> */}
-        </p>
-      </center>
-    </div>
+    ></div>
   );
 }
 

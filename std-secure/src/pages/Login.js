@@ -15,7 +15,7 @@ import {
 
 function Login({ setIsAuth }) {
   const navigate = useNavigate();
-  const postCollectionRef = collection(db, "users");
+  const postCollectionRef = collection(db, process.env.REACT_APP_ADMIN_USERS);
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider).then(async (result) => {

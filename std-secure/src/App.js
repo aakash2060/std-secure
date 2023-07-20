@@ -13,7 +13,7 @@ import "./auth/create-admin";
 import "react-toastify/dist/ReactToastify.css";
 import { collection, getDocs } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
-import Admin from "./pages/Admin";
+import Admin from "./pages/AdminDashboard";
 
 function App() {
   const AUTO_LOGOUT_TIME = 60 * 30 * 1000; // 30 min
@@ -25,12 +25,17 @@ function App() {
   const [isApproved, setIsApproved] = useState(false);
   const uid = localStorage.getItem("uid") || "";
   const [loading, setLoading] = useState(true); // Add loading state
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const Unauthorized = () => {
     toast.error("Unauthorized!!!", {
       position: toast.POSITION.TOP_CENTER,
     });
   };
+  const handleToggle = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   const Unverified = () => {
     toast.error(
       "USER NOT APPROVED!!! Please contact with the admin to get the approval !!!",
@@ -51,7 +56,7 @@ function App() {
   };
 
   useEffect(() => {
-    const userDocRef = collection(db, "users");
+    const userDocRef = collection(db, process.env.REACT_APP_ADMIN_USERS);
     const checkAdmin = async () => {
       const getUser = await getDocs(userDocRef);
 
@@ -70,6 +75,8 @@ function App() {
         if (currentUser.data().id === uid) {
           if (currentUser.data().isApproved === true) {
             setIsApproved(true);
+          } else {
+            setIsApproved(false);
           }
         }
       });
@@ -103,24 +110,78 @@ function App() {
 
   return (
     <>
-      <nav>
-        <div className="logo"> SECURE</div>
-        <div className="nav-items">
-        <Link to="/">Home</Link>
-        {!isAuth ? (
-          <Link to="/login">Login</Link>
-        ) : (
-          <>
-            {isApproved && <Link to="/posts">Post</Link>}
-            {isAdmin && (
-              <>
-                <Link to="/createpost">Create Post</Link>
-                <Link to="/admindashboard">Admin</Link>
-              </>
-            )}
-            <Link onClick={signUserOut}>Log Out</Link>
-          </>
-        )}
+      <nav className="navbar navbar-expand-md navbar-dark bg-dark">
+        <div className="container-fluid">
+          <div className="logo" style={{ position: "absolute", top: "10px" }}>
+            <img
+              src="/secure.png"
+              alt="Secure Logo"
+              height="50px"
+              width="50px"
+            />
+          </div>
+          <Link
+            className="navbar-brand"
+            to="/"
+            style={{ marginLeft: "55px", color: "orange" }}
+          >
+            SECURE
+          </Link>
+
+          <button
+            className="navbar-toggler"
+            type="button"
+            onClick={handleToggle}
+            aria-expanded={!isCollapsed}
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div
+            className={`bg-dark collapse navbar-collapse${
+              isCollapsed ? "" : " show"
+            }`}
+            id="navbarNavAltMarkup"
+          >
+            <div className="bg-dark navbar-nav ms-auto">
+              <Link to="/" className="nav-link" aria-current="page">
+                Home
+              </Link>
+
+              {isAuth ? (
+                <>
+                  {isApproved && (
+                    <>
+                      <Link to="/posts" className="nav-link">
+                        Post
+                      </Link>
+                      {isAdmin && (
+                        <>
+                          <Link to="/createpost" className="nav-link">
+                            Create Post
+                          </Link>
+                          <Link to="/admindashboard" className="nav-link">
+                            Admin
+                          </Link>
+                        </>
+                      )}
+                    </>
+                  )}
+                  <Link
+                    className="nav-link"
+                    onClick={signUserOut}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Log Out
+                  </Link>
+                </>
+              ) : (
+                <Link to="/login" className="nav-link ">
+                  Login
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
       </nav>
       <ToastContainer />
@@ -153,8 +214,17 @@ function App() {
             </Routes>
           ) : (
             <Routes>
-              <Route path="/" element={<Unverified />} />
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Landing isAuth={isAuth} />
+                    <Unverified />
+                  </>
+                }
+              />
               <Route path="/posts" element={<Unverified />} />
+              <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
             </Routes>
           )}
         </>

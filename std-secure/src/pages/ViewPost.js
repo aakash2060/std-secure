@@ -11,9 +11,10 @@ function ViewPost() {
   const [show, setShow] = useState(false);
   const [password, setPassword] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(true);
+  const postDoc = doc(db, process.env.REACT_APP_ADMIN_DATABSE, postId);
+
 
   const getPosts = async () => {
-    const postDoc = doc(db, "posts", postId);
     const postData = await getDoc(postDoc);
     setPost(postData.data());
     if (postData.data().password.length === 0) {
@@ -25,7 +26,6 @@ function ViewPost() {
   useEffect(() => {
     const fetchData = async () => {
       await getPosts();
-      // setShowPasswordModal(true);
     };
 
     fetchData();
@@ -84,7 +84,7 @@ function ViewPost() {
 
       {show && (
         <div className="homepage">
-          <div className="post" style={{ height: "90vh" }}>
+          <div className="view-post" style={{ height: "90vh" }}>
             <div className="postHeader">
               <div className="title">
                 <h1> {post.title}</h1>
@@ -110,7 +110,6 @@ function ViewPost() {
                 {post.postText}
               </Linkify>
             </div>
-            {/* <h3>@{post.author.name}</h3> */}
           </div>
         </div>
       )}

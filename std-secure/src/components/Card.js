@@ -59,7 +59,7 @@ export default function Card({
     });
   };
 
-  const renderer = ({ hours, minutes, seconds, completed }) => {
+  const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       return;
     } else {
@@ -69,7 +69,10 @@ export default function Card({
             <span style={{ color: "black", opacity: "0.8" }}>
               Time Remaining &nbsp;
             </span>
-            {hours}:&nbsp;{minutes}:&nbsp;{seconds}&nbsp;&nbsp;
+            {days > 0 ? `${days}:` : ""}
+            {hours > 0 ? `${hours}:` : ""}
+            &nbsp;{minutes}:&nbsp;
+            {seconds} &nbsp;&nbsp;
           </div>
 
           {/* <div className="countdown-units">
@@ -82,7 +85,7 @@ export default function Card({
   };
 
   return (
-    <div>
+    <div className="homePage">
       <form onSubmit={onChangeSearch}>
         <div className="search-bar">
           <input
@@ -100,7 +103,7 @@ export default function Card({
       {postLists.map((post, index) => {
         return (
           <div className="post" key={index}>
-            {post.expiryDate === undefined ||
+            {post.expiryDate === "" ||
             new Date(post.expiryDate).getTime() > new Date() ? (
               <div className="postWrapper">
                 <div className="postTop">
@@ -192,13 +195,19 @@ export default function Card({
                 </div>
                 <div className="postBottom">
                   <div className="postBottomLeft">
-                    <span className="postLikeCounter"  onClick={() => handleLikeClick(post.id)}>
-                    {post.liked ? <FaThumbsUp color="green" /> : <FaRegThumbsUp />}
-                   
+                    <span
+                      className="postLikeCounter"
+                      onClick={() => handleLikeClick(post.id)}
+                    >
+                      {post.liked ? (
+                        <FaThumbsUp color="green" />
+                      ) : (
+                        <FaRegThumbsUp />
+                      )}
                     </span>
                   </div>
                   <div className="postBottomRight">
-                    <span className="postCommenttext"> comments</span>
+                    <span className="postCommenttext"> </span>
                   </div>
                 </div>
               </div>

@@ -16,99 +16,63 @@ import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 
 function CreatePost(props) {
-  const location = useLocation();
   let isEditing = false;
-
+  let postid = "";
+  let utcDateTime = "";
+  const location = useLocation();
+  const navigate = useNavigate();
   const { isAuth } = props;
-  // const [post, setPost] = useState("");
   const [title, setTitle] = useState("");
   const [postText, setPostText] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
-  // const [file, setFile] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [edate, setDate] = useState("");
   const [time, setTime] = useState("");
+  const postCollectionRef = collection(db, process.env.REACT_APP_ADMIN_DATABSE);
+  const combinedDateTime = `${edate}T${time}`;
 
-  let postid = "";
+  console.log("🚀 ~ file: CreateEditPost.js:35 ~ CreatePost ~ combinedDateTime:", combinedDateTime)
+
 
   if (location && location.state && location.state.currentState) {
     isEditing = true;
     postid = location.state.id;
   }
-  const combinedDateTime = `${edate}T${time}`;
-  const utcDateTime = new Date(combinedDateTime).toUTCString();
-  
+
   useEffect(() => {
     if (isEditing) {
       const getPosts = async () => {
-        const postDoc = doc(db, "posts", postid);
+        const postDoc = doc(db, process.env.REACT_APP_ADMIN_DATABSE, postid);
         const postData = await getDoc(postDoc);
-        // setPost(postData.data());
         setTitle(postData.data().title);
         setPostText(postData.data().postText);
-        setDate(
-          DateTime.fromJSDate(new Date(postData.data().expiryDate)).toFormat(
-            "yyyy-MM-dd"
-          )
-        );
-        setTime(
-          DateTime.fromJSDate(new Date(postData.data().expiryDate)).toFormat(
-            "T"
-          )
-        );
+        if (postData.data().expiryDate) {
+          setDate(
+            DateTime.fromJSDate(new Date(postData.data().expiryDate)).toFormat(
+              "yyyy-MM-dd"
+            )
+          );
+          setTime(
+            DateTime.fromJSDate(new Date(postData.data().expiryDate)).toFormat(
+              "T"
+            )
+          );
+        }
       };
 
       getPosts();
     }
   }, [isEditing, postid]);
 
-  // const handleFileChange = (event) => {
-  //   const selectedFile = event.target.files[0];
-  //   setFile(selectedFile);
-  // };
-  // const upload = async () => {
-  //   if (file) {
-  //     const storageRef = storage().ref();
-  //     const fileRef = storageRef.child(`files/${file.name}`);
-  //     await fileRef.put(file);
-  //     console.log("File uploaded successfully!");
-  //   }
-  // };
-
-  const postCollectionRef = collection(db, "posts");
-  const navigate = useNavigate();
-
   const createPost = async () => {
-    if (password !== confirmPassword) {
-      setError({ password: "Passwords do not match" });
+    if ((edate && !time) || (!edate && time)) {
+      setError({ date: "Please fill both Date and Time or leave them empty." });
       return;
     }
 
-    if (error != null) {
+    if (Object.keys(error).length === 0) {
       await addDoc(postCollectionRef, {
-        title,
-        postText,
-        author: {
-          name: auth.currentUser.displayName,
-          id: auth.currentUser.uid,
-        },
-        password,
-        date: serverTimestamp(),
-        expiryDate: utcDateTime,
-      });
-      navigate("/posts");
-    }
-  };
-  const savePost = async () => {
-    const postRef = doc(postCollectionRef, postid);
-    if (password !== confirmPassword) {
-      setError({ password: "Passwords do not match" });
-      return;
-    }
-
-    if (error != null) {
-      await updateDoc(postRef, {
         title,
         postText,
         author: {
@@ -132,9 +96,43 @@ function CreatePost(props) {
       navigate("/posts");
     }
   };
+  const savePost = async () => {
+    const postRef = doc(postCollectionRef, postid);
+    if (password !== confirmPassword) {
+      setError({ password: "Passwords do not match" });
+      return;
+    }
+    if ((edate && !time) || (!edate && time)) {
+      setError({ date: "Please fill both Date and Time or leave them empty." });
+      return;
+    }
+    if (Object.keys(error).length === 0) {
+      await updateDoc(postRef, {
+        title,
+        postText,
+        author: {
+          name: auth.currentUser.displayName,
+          id: auth.currentUser.uid,
+        },
+        password,
+        date: serverTimestamp(),
+        expiryDate: utcDateTime,
+      });
+      toast.success("Successfully Edited!", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      navigate("/posts");
+    }
+  };
 
   const handlePasswordChange = (event) => {
-    let error = {};
     setPassword(event.target.value);
     if (event.target.value !== confirmPassword) {
       error.password = "Passwords do not match";
@@ -143,11 +141,21 @@ function CreatePost(props) {
   };
 
   const changeDate = (e) => {
+    let error = {};
     setDate(e.target.value);
+    if (time === "") {
+      error.date = "Please fill both Date and Time or leave them empty.";
+    }
+    setError(error);
   };
 
   const changeTime = (e) => {
+    let error = {};
     setTime(e.target.value);
+    if (edate === "") {
+      error.date = "Please fill both Date and Time or leave them empty.";
+    }
+    setError(error);
   };
 
   const handleConfirmPasswordChange = (event) => {
@@ -161,6 +169,11 @@ function CreatePost(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (combinedDateTime.length > 5) {
+      utcDateTime = new Date(combinedDateTime).toUTCString();
+    } else {
+      utcDateTime = "";
+    }
     if (isEditing) {
       savePost();
     } else {
@@ -172,7 +185,7 @@ function CreatePost(props) {
     if (!isAuth) {
       navigate("/login");
     }
-  }, [isAuth,navigate]);
+  }, [isAuth, navigate]);
 
   return (
     <>
@@ -232,6 +245,9 @@ function CreatePost(props) {
                 onChange={changeTime}
               ></input>
             </div>
+
+            {error && <p style={{ color: "red" }}>{error.date}</p>}
+
             <div>
               <div className="date-group">
                 <label className="form-label">
@@ -259,8 +275,6 @@ function CreatePost(props) {
                 {error && <p style={{ color: "red" }}>{error.password}</p>}
               </div>
             </div>
-            {/* <input type="file" onChange={handleFileChange} className="form-input" />
-        <button onClick={upload}> Upload </button> */}
             <br />
             <br />
             <button className="btn btn-primary" type="submit">

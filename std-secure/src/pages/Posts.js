@@ -16,10 +16,10 @@ function Posts({ isAuth, isAdmin }) {
   const navigate = useNavigate();
   const [postLists, setPostLists] = useState([]);
   const [loading, isLoading] = useState(true);
-  const postsCollectionRef = collection(db, "posts");
+  const postsCollectionRef = collection(db, process.env.REACT_APP_ADMIN_DATABSE);
 
   async function deletePost(id) {
-    const postDoc = doc(db, "posts", id);
+    const postDoc = doc(db, process.env.REACT_APP_ADMIN_DATABSE, id);
     await deleteDoc(postDoc);
     getPosts();
   }

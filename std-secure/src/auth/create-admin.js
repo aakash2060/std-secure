@@ -18,7 +18,7 @@ const password = process.env.REACT_APP_ADMIN_PASSWORD || "admin_secure";
 
 let checkOnce = false;
 
-const postCollectionRef = collection(db, "users");
+const postCollectionRef = collection(db, process.env.REACT_APP_ADMIN_USERS);
 
 const checkAdminEmail = async () => {
   if (!checkOnce) {
@@ -42,7 +42,6 @@ const checkAdminEmail = async () => {
         id: 1,
         name: "Admin",
         email: adminEmail,
-        password,
         isAdmin: true,
         isApproved: true,
       });

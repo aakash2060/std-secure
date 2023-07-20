@@ -173,6 +173,10 @@ textarea {
   padding: 20px;
   padding-top: 10px;
   border-radius: 15px;
+  @media screen and (max-width: 450px) {
+    width: 400px;
+    font-size: 10px;
+  }
 }
 
 .post .postHeader {
@@ -215,13 +219,20 @@ textarea {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   padding: 2px 16px;
-  height: 80vh;
+  /* height: 80vh; */
+  width: 100%; /* Use percentage-based width */
+  max-width: 690px; /* Set a maximum width for larger screens */
 }
 .post:hover {
   background-color: rgb(240, 240, 240);
-  max-height: 155%;
-  width: 93%;
-
+  width: 700px;
+}
+.view-post {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  padding: 2px 16px;
+  margin-top: 35px;
+  width: 100%; /* Use percentage-based width */
 }
 
 .post-container {
@@ -233,15 +244,13 @@ textarea {
 }
 
 .post-box {
+  position: relative;
+  top: 1%;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-  padding: 24px;
+  padding: 14px;
   width: 600px;
-
-  @media screen and (max-width: 600px) {
-    width: 400px;
-  }
 }
 
 .post-title {
@@ -299,21 +308,23 @@ textarea {
 }
 .search-bar {
   position: relative;
-  margin-left: 70%;
+  /* margin-left: 990%; */
   border-radius: 2px;
+  left: 70%;
   width: 20px;
-  padding-left: 30px;
-  
+  margin-top: 25px; /* Adjust the margin to position it vertically */
+  margin-left: 150px;
+  border-radius: 2px;
+  /* z-index: -1; */
 }
 .search-bar input[type="text"]:focus {
   box-shadow: 0 0 1px rgb(0, 0, 0);
-  
 }
 
 .search-icon {
   position: absolute;
-  top: 50%;
-  left: 165px;
+  top: 55%;
+  left: 135px;
   transform: translateY(-50%);
 }
 .time-label {
@@ -336,24 +347,20 @@ textarea {
   cursor: pointer;
   font-size: 16px;
   transition: transform 0.2s;
-
 }
 
 .btn-primary {
   background-color: #007bff;
   transform: scale(1.2);
-
 }
 
 .btn-primary:hover {
   background-color: #0062cc;
-
 }
 
 .delete-button:hover {
   color: red;
   transform: scale(1.2);
-
 }
 .edit-button:hover {
   color: orange;
@@ -361,7 +368,6 @@ textarea {
 }
 
 .post {
-  width: 100%;
   border-radius: 10px;
   -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
   box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
@@ -369,7 +375,8 @@ textarea {
 }
 
 .postWrapper {
-  padding: 10px;
+  padding: 9px;
+  width: 100%; /* Use percentage-based width */
 }
 
 .postTop {
@@ -423,7 +430,6 @@ textarea {
   align-items: center;
 }
 
-
 /* Styling for the countdown container */
 .countdown-container {
   position: relative;
@@ -452,11 +458,10 @@ textarea {
   font-weight: bold;
   color: #5e2b99; /* Set the color for the timer digits */
   padding-left: -150%;
-
+  z-index: -2;
 }
 .countdown-timer:hover {
   transform: scale(1.1);
-
 }
 
 /* Styling for the countdown units (hours, minutes, seconds) */
@@ -480,7 +485,6 @@ textarea {
   transform: scale(1.1);
 }
 
-
 .postCommenttext {
   cursor: pointer;
   border-bottom: 1px dashed gray;
@@ -488,11 +492,26 @@ textarea {
 }
 
 .admin-container {
+  position: relative;
   max-width: 90%; /* Adjust the width as needed */
-  margin: 0 auto;
   padding: 20px;
+  margin-top: 2%;
+  margin-left: 5%;
   background-color: #ffffff;
   box-shadow: 0 8px 8px rgba(0, 0.2, 0.2, 0.2);
+  @media screen and (max-width: 500px) {
+    width: 400px;
+    font-size: 10px;
+    margin-top: 15%;
+  }
+}
+.admin-list {
+  width: 100%;
+  margin: 0 auto;
+  @media screen and (max-width: 450px) {
+    width: 400px;
+    font-size: 10px;
+  }
 }
 .option-container {
   border-radius: 15px;
@@ -501,27 +520,82 @@ textarea {
   max-width: auto;
 }
 
+.table th,
+.table td {
+  white-space: nowrap; /* Prevent table cells from wrapping on smaller screens */
+}
+
+@media screen and (max-width: 900px) {
+  .admin-container {
+    max-width: 95%; /* Adjust the width for smaller screens */
+  }
+
+  .admin-list {
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scrolling on smaller screens */
+  }
+
+  .table {
+    min-width: 900px; /* Set a minimum width for the table to prevent content from collapsing */
+  }
+
+  .table th,
+  .table td {
+    white-space: nowrap; /* Prevent table cells from wrapping on smaller screens */
+  }
+}
+
 nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
   background-color: #333;
-  width: 100%;
+  z-index: 99;
 }
-
 .logo {
+  position: relative;
   font-size: 1.5rem;
+  width: 50px;
+  height: 40px;
   font-weight: bold;
   font-family: Helvetica;
   color: #ff7700;
-  padding-left: 15px;
+  padding-left: 0px;
 }
+/* .navbar-nav {
+  position: absolute;
+  font-size: 16px;
+  right: 0;
+  gap:5px;
+} */
 
+.nav-link {
+  margin-top: 0px;
+  font-size: 23px;
+  white-space: nowrap;
+  
+}
+.nav-link:hover {
+  color: #4bd4ec;
+}
+.navbar {
+  height: 60px;
+}
 .nav-items {
-  display: flex;
+  position: relative;
+  margin-bottom: 10px;
   gap: 1rem;
   padding-right: 5px;
+  /* flex-direction: column; Change to column direction for vertical stacking */
+  @media screen and (max-width: 700px) {
+    gap: 0rem;
+    white-space: nowrap;
+  }
 }
 
 .nav-items > * {
@@ -529,8 +603,16 @@ nav {
   color: #fff;
   font-weight: bold;
   padding-right: 5px;
+  font-size: 21px;
+
+  @media screen and (max-width: 650px) {
+    font-size: 15px;
+    padding-right: 0px;
+    gap: 0;
+  }
 }
 
 .nav-items > *:hover {
-  color: #ccc;
+  color: #4bd4ec;
+  transform: scale(1.1);
 }
