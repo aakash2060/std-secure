@@ -4,8 +4,13 @@ This project is a web application built using React and Firebase, designed to fa
 
 # FEATURES
 **Google Sign-In:** Students can log in using their Google accounts.
+
 **Post Management: **Teachers can create and manage posts, including announcements, homework, and e-books.
+
 **Document Embedding:** Teachers can embed Google Docs or online documents into their posts. Students can access the content without being able to see the source link, promoting privacy and preventing unauthorized sharing.
+
 **Post Privacy:** Teachers can set a password for specific posts to restrict access.
+
 **Post Expiration:** Teachers can set an expiration date for posts to automatically remove them from the platform.
+
 **Admin Dashboard: **Administrators have access to a dedicated dashboard to manage users and perform administrative tasks.
