@@ -32,7 +32,6 @@ function CreatePost(props) {
   const postCollectionRef = collection(db, process.env.REACT_APP_ADMIN_DATABSE);
   const combinedDateTime = `${edate}T${time}`;
 
-  console.log("🚀 ~ file: CreateEditPost.js:35 ~ CreatePost ~ combinedDateTime:", combinedDateTime)
 
 
   if (location && location.state && location.state.currentState) {
@@ -201,6 +200,7 @@ function CreatePost(props) {
                 className="form-input"
                 placeholder="Title..."
                 value={title}
+                autoComplete="title"
                 required
                 onChange={(event) => {
                   setTitle(event.target.value);
@@ -258,6 +258,7 @@ function CreatePost(props) {
                   style={{ borderColor: error.password ? "red" : "" }}
                   type="password"
                   placeholder="Password..."
+                  autoComplete="password"
                   onChange={handlePasswordChange}
                 />
                 <br />
@@ -270,6 +271,7 @@ function CreatePost(props) {
                   type="password"
                   style={{ borderColor: error.password ? "red" : "" }}
                   placeholder="Confirm Password..."
+                  autoComplete="new-password"
                   onChange={handleConfirmPasswordChange}
                 />
                 {error && <p style={{ color: "red" }}>{error.password}</p>}

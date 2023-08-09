@@ -45,6 +45,7 @@ export default function Card({
     if (searchValue === "") {
       getPosts();
     }
+    
   };
 
   const handleDelete = (props) => {
@@ -52,11 +53,12 @@ export default function Card({
     setShowDeleteModal(false);
   };
   const handleLikeClick = (postId) => {
-    setPostLists((prevPostLists) => {
-      return prevPostLists.map((post) =>
-        post.id === postId ? { ...post, liked: !post.liked } : post
-      );
-    });
+    const updatedPostLists = postLists.map((post) =>
+      post.id === postId ? { ...post, liked: !post.liked } : post
+    );
+
+    // Update the state with the new postLists data
+    setPostLists(updatedPostLists);
   };
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
