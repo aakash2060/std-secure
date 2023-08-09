@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { collection, getDocs } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 import Admin from "./pages/AdminDashboard";
+import SignUp from "./pages/SignUp";
 
 function App() {
   const AUTO_LOGOUT_TIME = 60 * 30 * 1000; // 30 min
@@ -22,7 +23,7 @@ function App() {
     return storedAuth ? JSON.parse(storedAuth) : false;
   });
   const [isAdmin, setisAdmin] = useState(false);
-  const [isApproved, setIsApproved] = useState(false);
+  const [isApproved, setIsApproved] = useState(true);
   const uid = localStorage.getItem("uid") || "";
   const [loading, setLoading] = useState(true); // Add loading state
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -112,7 +113,7 @@ function App() {
     <>
       <nav className="navbar navbar-expand-md navbar-dark bg-dark">
         <div className="container-fluid">
-          <div className="logo" style={{ position: "absolute", top: "10px" }}>
+          <div className="logo" style={{ position: "absolute", top: "1px" }}>
             <img
               src="/secure.png"
               alt="Secure Logo"
@@ -130,6 +131,7 @@ function App() {
 
           <button
             className="navbar-toggler"
+            style={{paddingBottom:"20px"}}
             type="button"
             onClick={handleToggle}
             aria-expanded={!isCollapsed}
@@ -143,7 +145,7 @@ function App() {
             }`}
             id="navbarNavAltMarkup"
           >
-            <div className="bg-dark navbar-nav ms-auto">
+            <div onClick={handleToggle} className="bg-dark navbar-nav ms-auto">
               <Link to="/" className="nav-link" aria-current="page">
                 Home
               </Link>
@@ -190,6 +192,7 @@ function App() {
           {isApproved ? (
             <Routes>
               <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+              <Route path="/signup" element={<SignUp />} />
 
               <Route path="/" element={<Landing isAuth={isAuth} />} />
               <Route
@@ -230,6 +233,8 @@ function App() {
         </>
       ) : (
         <Routes>
+          <Route path="/signup" element={<SignUp />} />
+
           <Route path="/" element={<Landing isAuth={isAuth} />} />
           <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
         </Routes>
