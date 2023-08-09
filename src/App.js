@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import CreatePost from "./pages/CreateEditPost";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import Admin from "./pages/AdminDashboard";
 import SignUp from "./pages/SignUp";
 
 function App() {
+  const navigate = useNavigate();
   const AUTO_LOGOUT_TIME = 60 * 30 * 1000; // 30 min
   const [isAuth, setIsAuth] = useState(() => {
     const storedAuth = localStorage.getItem("isAuth");
@@ -38,6 +39,9 @@ function App() {
   };
 
   const Unverified = () => {
+    setIsAuth(false);
+    localStorage.clear();
+
     toast.error(
       "USER NOT APPROVED!!! Please contact with the admin to get the approval !!!",
       {
@@ -131,7 +135,7 @@ function App() {
 
           <button
             className="navbar-toggler"
-            style={{paddingBottom:"20px"}}
+            style={{ paddingBottom: "20px" }}
             type="button"
             onClick={handleToggle}
             aria-expanded={!isCollapsed}
@@ -186,7 +190,13 @@ function App() {
           </div>
         </div>
       </nav>
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        theme="colored"
+        hideProgressBar={true}
+        closeOnClick={true}
+      />
       {isAuth ? (
         <>
           {isApproved ? (
@@ -226,7 +236,14 @@ function App() {
                   </>
                 }
               />
-              <Route path="/posts" element={<Unverified />} />
+              <Route
+                path="/posts"
+                element={
+                  <>
+                    <Navigate to="/login" /> <Unverified />
+                  </>
+                }
+              />
               <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
             </Routes>
           )}

@@ -496,6 +496,11 @@ label.valid:after {
   margin-right: 70px;
   margin-left: 80px;
 }
+.form-button {
+  text-align: center;
+  display: flex;
+  position:absolute;
+}
 
 .signin-image {
   margin-left: 110px;
@@ -581,6 +586,8 @@ label.valid:after {
 
   .form-button {
     text-align: center;
+    display: flex;
+    position:absolute;
   }
 
   .signin-form {

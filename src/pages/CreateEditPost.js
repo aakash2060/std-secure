@@ -32,8 +32,6 @@ function CreatePost(props) {
   const postCollectionRef = collection(db, process.env.REACT_APP_ADMIN_DATABSE);
   const combinedDateTime = `${edate}T${time}`;
 
-
-
   if (location && location.state && location.state.currentState) {
     isEditing = true;
     postid = location.state.id;
@@ -222,7 +220,7 @@ function CreatePost(props) {
             </div>
 
             <div className="form-group">
-              <label className="date-label">Expiry Date:</label>
+              <span className="date-label">Expiry Date:</span>
               &nbsp;&nbsp;
               <input
                 type="date"
@@ -233,7 +231,7 @@ function CreatePost(props) {
                 value={edate}
                 onChange={changeDate}
               ></input>
-              <label className="time-label">Expiry Time:</label>
+              <span className="time-label">Expiry Time:</span>
               &nbsp;&nbsp;
               <input
                 type="time"
@@ -250,9 +248,9 @@ function CreatePost(props) {
 
             <div>
               <div className="date-group">
-                <label className="form-label">
+                <strong className="form-label">
                   {isEditing ? "Reset Password:" : "Password:"}
-                </label>
+                </strong>
                 <input
                   className="form-input"
                   style={{ borderColor: error.password ? "red" : "" }}
@@ -262,10 +260,9 @@ function CreatePost(props) {
                   onChange={handlePasswordChange}
                 />
                 <br />
-                <br />
-                <label className="form-label">
+                <strong className="form-label">
                   {isEditing ? "Confirm Reset Password" : "Confirm Password:"}
-                </label>
+                </strong>
                 <input
                   className="form-input"
                   type="password"

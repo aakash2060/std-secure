@@ -118,8 +118,8 @@ textarea {
 .login-with-google-btn {
   margin-top: 25px;
   height: 49px;
-  margin-left: 10px;
-  width: 85%;
+  margin-left: 110px;
+  width: 65%;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   padding: 9px 8px 15px 27px;

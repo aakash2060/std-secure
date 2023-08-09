@@ -24,7 +24,6 @@ function SignUp() {
         console.log("here is the signup", userCredential);
         if (!userCredential.user.emailVerified) {
           sendEmailVerification(auth.currentUser);
-          console.log("email sent");
           toast.info("Please check your email to verify", {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 3000,
@@ -46,6 +45,7 @@ function SignUp() {
           isAdmin: false,
           isApproved: false,
         });
+        navigate("/login");
       })
       .catch((error) => {
         console.log(error);
@@ -59,7 +59,6 @@ function SignUp() {
       });
   };
   const onSubmit = (e) => {
-    
     e.preventDefault();
     console.log("SUBMITTED");
     signUp();
@@ -68,7 +67,7 @@ function SignUp() {
   return (
     <div>
       <section className="signup">
-        <ToastContainer/>
+        <ToastContainer />
         <div className="container">
           <div className="signup-content">
             <div className="signup-form">
@@ -141,6 +140,9 @@ function SignUp() {
                 </div>
                 <div className="form-group form-button">
                   <input
+                    style={{
+                      position: "fixed",
+                    }}
                     type="submit"
                     name="signup"
                     id="signup"

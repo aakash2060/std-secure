@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth, db, provider } from "../firebase";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   sendEmailVerification,
   sendPasswordResetEmail,
@@ -17,7 +17,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 function Login({ setIsAuth }) {
   const [email, setEmail] = useState("");
@@ -27,72 +27,91 @@ function Login({ setIsAuth }) {
   const postCollectionRef = collection(db, process.env.REACT_APP_ADMIN_USERS);
 
   const signInWithGoogle = () => {
-    signInWithPopup(auth, provider).then(async (userCredential) => {
-      setIsAuth(true);
+    signInWithPopup(auth, provider)
+      .then(async (userCredential) => {
+        setIsAuth(true);
+        localStorage.setItem("isAuth", true);
 
-      const name = auth.currentUser.displayName;
-      const email = auth.currentUser.email;
-      const id = auth.currentUser.uid;
-      const date = serverTimestamp();
-      const uid = auth.currentUser.uid;
-      localStorage.setItem("uid", uid);
+        const name = auth.currentUser.displayName;
+        const email = auth.currentUser.email;
+        const id = auth.currentUser.uid;
+        const date = serverTimestamp();
+        const uid = auth.currentUser.uid;
+        localStorage.setItem("uid", uid);
 
-      const querySnapshot = await getDocs(
-        query(postCollectionRef, where("email", "==", email))
-      );
-      if (querySnapshot.size > 0) {
-        const docRef = doc(postCollectionRef, querySnapshot.docs[0].id);
-        await updateDoc(docRef, {
-          id,
-          date,
-          name,
-          email,
-        });
-      } else {
-        await addDoc(postCollectionRef, {
-          id,
-          date,
-          name,
-          email,
-          isAdmin: false,
-          isApproved: false,
-        });
-      }
+        const querySnapshot = await getDocs(
+          query(postCollectionRef, where("email", "==", email))
+        );
+        if (querySnapshot.size > 0) {
+          const docRef = doc(postCollectionRef, querySnapshot.docs[0].id);
+          await updateDoc(docRef, {
+            id,
+            date,
+            name,
+            email,
+          });
+        } else {
+          await addDoc(postCollectionRef, {
+            id,
+            date,
+            name,
+            email,
+            isAdmin: false,
+            isApproved: false,
+          });
+        }
 
-      navigate("/posts");
-    });
+        navigate("/posts");
+      })
+      .catch((error) => {
+        toast.error(error.code.replace("auth/", ""));
+      });
   };
 
   const signIn = (e) => {
     e.preventDefault();
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         console.log(userCredential);
         if (!userCredential.user.emailVerified) {
-          toast.error("Unverified user. Please check your email.", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 3000,
-            theme: "colored",
-            hideProgressBar: true,
-            closeOnClick: true,
-          });
+          toast.error("Unverified user. Please check your email.");
           sendEmailVerification(auth.currentUser);
         } else {
           setIsAuth(true);
+          localStorage.setItem("isAuth", true);
           localStorage.setItem("uid", userCredential.user.uid);
           navigate("/posts");
         }
+        const name = userCredential.user.displayName;
+        const email = userCredential.user.email;
+        const id = userCredential.user.uid;
+        const date = serverTimestamp();
+
+        const querySnapshot = await getDocs(
+          query(postCollectionRef, where("email", "==", email))
+        );
+        if (querySnapshot.size > 0) {
+          const docRef = doc(postCollectionRef, querySnapshot.docs[0].id);
+          await updateDoc(docRef, {
+            id,
+            date,
+            name,
+            email,
+          });
+        } else {
+          await addDoc(postCollectionRef, {
+            id,
+            date,
+            name,
+            email,
+            isAdmin: false,
+            isApproved: false,
+          });
+        }
       })
       .catch((error) => {
-        console.log(error.code);
-        toast.error(error.code, {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 1000,
-          theme: "colored",
-          hideProgressBar: true,
-          closeOnClick: true,
-        });
+        toast.error(error.code.replace("auth/", ""));
       });
   };
 
@@ -106,7 +125,6 @@ function Login({ setIsAuth }) {
           hideProgressBar: true,
           closeOnClick: true,
         });
-
       })
       .catch((error) => {
         console.log(error);
@@ -129,7 +147,6 @@ function Login({ setIsAuth }) {
 
   return (
     <div className="loginPage">
-      <ToastContainer />
       <section className="signup">
         <div className="container">
           <div className="signin-content">
@@ -141,7 +158,7 @@ function Login({ setIsAuth }) {
 
             <div className="signin-form">
               <h2 className="form-title">Login</h2>
-              <form onSubmit={signIn} className="register-form" id="login-form">
+              <form className="register-form" id="login-form">
                 <div className="form-group">
                   <label htmlFor="your_name">
                     <i className="zmdi zmdi-account material-icons-name"></i>
@@ -172,12 +189,12 @@ function Login({ setIsAuth }) {
                 </div>
                 <label
                   htmlFor="remember-me"
-                  class="forget-pass"
+                  className="forget-pass"
                   onClick={resetPass}
                 >
                   Forget Password?
                 </label>
-                <div className="form-group form-button">
+                <div className=" form-button">
                   <input
                     style={{
                       height: "50px",
@@ -190,15 +207,17 @@ function Login({ setIsAuth }) {
                     id="signin"
                     className="form-submit"
                     value="Log in"
+                    onClick={signIn}
                   />
-                  <button
-                    className="login-with-google-btn"
-                    onClick={signInWithGoogle}
-                  >
-                    Continue with Google
-                  </button>
                 </div>
               </form>
+              <button
+                className="login-with-google-btn"
+                type="submit"
+                onClick={signInWithGoogle}
+              >
+                Continue with Google
+              </button>
               <hr />
 
               <div className="social-login">
