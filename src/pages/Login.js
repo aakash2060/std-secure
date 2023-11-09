@@ -83,9 +83,7 @@ function Login({ setIsAuth }) {
           localStorage.setItem("uid", userCredential.user.uid);
           navigate("/posts");
         }
-        const name = userCredential.user.displayName;
-        const email = userCredential.user.email;
-        const id = userCredential.user.uid;
+
         const date = serverTimestamp();
 
         const querySnapshot = await getDocs(
@@ -94,19 +92,7 @@ function Login({ setIsAuth }) {
         if (querySnapshot.size > 0) {
           const docRef = doc(postCollectionRef, querySnapshot.docs[0].id);
           await updateDoc(docRef, {
-            id,
             date,
-            name,
-            email,
-          });
-        } else {
-          await addDoc(postCollectionRef, {
-            id,
-            date,
-            name,
-            email,
-            isAdmin: false,
-            isApproved: false,
           });
         }
       })
@@ -200,7 +186,8 @@ function Login({ setIsAuth }) {
                       height: "50px",
                       fontWeight: "bold",
                       fontSize: "15px",
-                      padding: "10px 30px", // Adjusting padding for spacing
+                      marginLeft: "65px",
+                      padding: "10px 30px",
                     }}
                     type="submit"
                     name="signin"
@@ -211,6 +198,7 @@ function Login({ setIsAuth }) {
                   />
                 </div>
               </form>
+            
               <button
                 className="login-with-google-btn"
                 type="submit"
@@ -218,6 +206,9 @@ function Login({ setIsAuth }) {
               >
                 Continue with Google
               </button>
+              <br />
+              <br />
+              <br />
               <hr />
 
               <div className="social-login">
@@ -228,42 +219,21 @@ function Login({ setIsAuth }) {
                   <input
                     style={{
                       marginTop: "0px",
-                      marginLeft: "35px",
+                      marginLeft: "25px",
                       color: "white",
                       fontSize: "15px",
                       backgroundColor: "#42b72a",
-                      border: "1px solid transparent", // Adding 'solid' to fix border rendering
-                      padding: "10px 35px", // Adjusting padding for spacing
-                      fontWeight: "bold", // Making the text bold
-                      display: "", // Making the input a block element
-                      width: "80%", // Making the input take full width of the parent
-                      boxSizing: "border-box", // Including padding and border in width
+                      border: "1px solid transparent",
+                      padding: "10px 15px",
+                      fontWeight: "bold",
+                      width: "80%",
                     }}
                     type="text"
                     readOnly
                     className="form-submit"
-                    value="Create a new account"
+                    value="   Create a new account"
                   />
                 </a>
-                {/* <ul className="socials">
-                 
-        
-                  <li>
-                    <a href="/">
-                      <i className="display-flex-center zmdi zmdi-facebook"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/">
-                      <i className="display-flex-center zmdi zmdi-twitter"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/">
-                      <i className="display-flex-center zmdi zmdi-google"></i>
-                    </a>
-                  </li>
-                </ul> */}
               </div>
             </div>
           </div>

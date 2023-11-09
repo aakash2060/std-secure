@@ -8,7 +8,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 dotenv.config();
 const adminEmail =
@@ -38,6 +39,8 @@ const checkAdminEmail = async () => {
         // console.log("User with email " + adminEmail + " is already an admin");
       }
     } else {
+      // createUserWithEmailAndPassword(auth, adminEmail, password);
+
       await addDoc(postCollectionRef, {
         id: 1,
         name: "Admin",
